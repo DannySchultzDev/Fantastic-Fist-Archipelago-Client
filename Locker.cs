@@ -36,10 +36,10 @@ namespace Fantastic_Fist_Archipelago_Client
 							gameObject.SetActive(ItemManager.itemUnlocks[ItemType.GRAVITY_WATER_DOWN]);
 							break;
 						case "Mod_PropBlock_Blue":
-							gameObject.SetActive(ItemManager.itemUnlocks[ItemType.SEMISOLID_BLUE]);
+							gameObject.SetActive(ItemManager.itemUnlocks[ItemType.SEMISOLID_STANDARD]);
 							break;
 						case "Mod_PropBlock_Pink":
-							gameObject.SetActive(ItemManager.itemUnlocks[ItemType.SEMISOLID_PINK]);
+							gameObject.SetActive(ItemManager.itemUnlocks[ItemType.SEMISOLID_INVERTED]);
 							break;
 						case "Mod_PropBlock_Punch":
 							gameObject.SetActive(ItemManager.itemUnlocks[ItemType.SEMISOLID_TOGGLE]);

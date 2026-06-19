@@ -13,6 +13,10 @@
 		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>disable</ImplicitUsings>
 	</PropertyGroup>
+	<ItemGroup>
+	  <EmbeddedResource Remove="AP World\**" />
+	  <None Remove="AP World\**" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Reference Include="Assembly-CSharp-firstpass">
@@ -203,8 +207,11 @@
 	<ItemGroup>
 		<Compile Include="Core.cs" />
 		<Compile Include="ItemManager.cs" />
+		<Compile Include="LocationManager.cs" />
 		<Compile Include="Locker.cs" />
+		<Compile Include="MessageManager.cs" />
 		<Compile Include="Patcher.cs" />
+		<Compile Include="PathManager.cs" />
 		<Content Include="Directory.Build.props" />
 	</ItemGroup>
 	

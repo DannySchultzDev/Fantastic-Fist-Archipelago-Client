@@ -185,13 +185,13 @@ namespace Fantastic_Fist_Archipelago_Client
 				case "Starblock":
 				case "Starblock_W2":
 				case "Boss3Starblock":
-					type = ItemType.STAR_BLOCK_PHYSICS;
+					type = ItemType.STAR_BLOCK_STANDARD;
 					break;
 				case "Boss3Starblock_Lock":
 					type = ItemType.STAR_BLOCK_HOLD;
 					break;
 				case "Boss3Heartblock_N":
-					type = ItemType.HEART_BLOCK_PHYSICS;
+					type = ItemType.HEART_BLOCK_STANDARD;
 					break;
 				case "W1Gube":
 					type = ItemType.GUBE;
@@ -308,7 +308,7 @@ namespace Fantastic_Fist_Archipelago_Client
 			if (slider.W3A)
 				type = ItemType.SLIDING_BLOCK_HOLD;
 			else if (slider.World2Slider)
-				type = ItemType.ELEVATOR_ARROW;
+				type = ItemType.LIFT_ARROW;
 			else if (!slider.idea2)
 				type = ItemType.SLIDING_BLOCK_CRYSTAL;
 			else if (!slider.Boss3Version)
@@ -1074,7 +1074,7 @@ namespace Fantastic_Fist_Archipelago_Client
 			if (__instance.Key)
 				type = ItemType.BUBBLE_KEY;
 			else if (__instance.W3B)
-				type = ItemType.BUBBLE_ITEM;
+				type = ItemType.BUBBLE_CLEAR;
 			else if (__instance.SurpriseHoneyBubble)
 				type = ItemType.BUBBLE_HONEY;
 			else
@@ -1101,7 +1101,7 @@ namespace Fantastic_Fist_Archipelago_Client
 			if (__instance.Key)
 				type = ItemType.BUBBLE_KEY;
 			else if (__instance.W3B)
-				type = ItemType.BUBBLE_ITEM;
+				type = ItemType.BUBBLE_CLEAR;
 			else if (__instance.SurpriseHoneyBubble)
 				type = ItemType.BUBBLE_HONEY;
 			else
@@ -1121,7 +1121,7 @@ namespace Fantastic_Fist_Archipelago_Client
 			if (__instance.Key)
 				type = ItemType.BUBBLE_KEY;
 			else if (__instance.W3B)
-				type = ItemType.BUBBLE_ITEM;
+				type = ItemType.BUBBLE_CLEAR;
 			else if (__instance.SurpriseHoneyBubble)
 				type = ItemType.BUBBLE_HONEY;
 			else
@@ -1141,7 +1141,7 @@ namespace Fantastic_Fist_Archipelago_Client
 			if (__instance.Key)
 				type = ItemType.BUBBLE_KEY;
 			else if (__instance.W3B)
-				type = ItemType.BUBBLE_ITEM;
+				type = ItemType.BUBBLE_CLEAR;
 			else if (__instance.SurpriseHoneyBubble)
 				type = ItemType.BUBBLE_HONEY;
 			else
@@ -1161,7 +1161,7 @@ namespace Fantastic_Fist_Archipelago_Client
 			if (__instance.Key)
 				type = ItemType.BUBBLE_KEY;
 			else if (__instance.W3B)
-				type = ItemType.BUBBLE_ITEM;
+				type = ItemType.BUBBLE_CLEAR;
 			else if (__instance.SurpriseHoneyBubble)
 				type = ItemType.BUBBLE_HONEY;
 			else
@@ -1212,7 +1212,7 @@ namespace Fantastic_Fist_Archipelago_Client
 			if (__instance.LeadCell)
 				type = ItemType.BALLOON_TOGGLE;
 			else if (__instance.Lead)
-				type = ItemType.BALLOON_METAL;
+				type = ItemType.BALLOON_LEAD;
 			else if (Core.CropString(__instance.gameObject.name).Equals("Balloon_Impulse"))
 				type = ItemType.BALLOON_BLUE;
 			else
@@ -1229,7 +1229,7 @@ namespace Fantastic_Fist_Archipelago_Client
 				if (__instance.Vis != null)
 					__instance.Vis.transform.localScale = Vector3.zero;
 			}
-			else if (type == ItemType.BALLOON_METAL ||  type == ItemType.BALLOON_TOGGLE)
+			else if (type == ItemType.BALLOON_LEAD ||  type == ItemType.BALLOON_TOGGLE)
 			{
 				__instance.Pop = false;
 				if (__instance.Outline != null)
@@ -1341,7 +1341,7 @@ namespace Fantastic_Fist_Archipelago_Client
 	{
 		private static bool Prefix(W3Girder __instance)
 		{
-			bool enabled = ItemManager.itemUnlocks[ItemType.ELEVATOR_HOLD];
+			bool enabled = ItemManager.itemUnlocks[ItemType.LIFT_HOLD];
 
 			for (int childId = 0; childId < __instance.transform.childCount; ++childId)
 			{
@@ -1362,7 +1362,7 @@ namespace Fantastic_Fist_Archipelago_Client
 	{
 		private static bool Prefix(DroneCarryPlatform __instance)
 		{
-			bool enabled = ItemManager.itemUnlocks[ItemType.ELEVATOR_HIVE];
+			bool enabled = ItemManager.itemUnlocks[ItemType.LIFT_HIVE];
 
 			for (int childId = 0; childId < __instance.transform.childCount; ++childId )
 			{
@@ -1688,7 +1688,7 @@ namespace Fantastic_Fist_Archipelago_Client
 		private static bool Prefix(FinalBoss_49_Bubbles __instance)
 		{
 			bool enabled = ItemManager.itemUnlocks[__instance.W3B ? 
-				ItemType.BUBBLE_ITEM : ItemType.BUBBLE_STATIONARY];
+				ItemType.BUBBLE_CLEAR : ItemType.BUBBLE_STATIONARY];
 
 			for (int childId = 0; childId < __instance.transform.childCount; ++childId)
 			{
@@ -1705,7 +1705,7 @@ namespace Fantastic_Fist_Archipelago_Client
 		private static bool Prefix(FinalBoss_49_Bubbles __instance)
 		{
 			return ItemManager.itemUnlocks[__instance.W3B ?
-				ItemType.BUBBLE_ITEM : ItemType.BUBBLE_STATIONARY];
+				ItemType.BUBBLE_CLEAR : ItemType.BUBBLE_STATIONARY];
 		}
 	}
 
@@ -1715,7 +1715,7 @@ namespace Fantastic_Fist_Archipelago_Client
 		private static bool Prefix(FinalBoss_49_Bubbles __instance)
 		{
 			return ItemManager.itemUnlocks[__instance.W3B ?
-				ItemType.BUBBLE_ITEM : ItemType.BUBBLE_STATIONARY];
+				ItemType.BUBBLE_CLEAR : ItemType.BUBBLE_STATIONARY];
 		}
 	}
 
@@ -1725,7 +1725,7 @@ namespace Fantastic_Fist_Archipelago_Client
 		private static bool Prefix(FinalBoss_49_Bubbles __instance)
 		{
 			return ItemManager.itemUnlocks[__instance.W3B ?
-				ItemType.BUBBLE_ITEM : ItemType.BUBBLE_STATIONARY];
+				ItemType.BUBBLE_CLEAR : ItemType.BUBBLE_STATIONARY];
 		}
 	}
 
@@ -1735,7 +1735,7 @@ namespace Fantastic_Fist_Archipelago_Client
 		private static bool Prefix(FinalBoss_49_Bubbles __instance)
 		{
 			return ItemManager.itemUnlocks[__instance.W3B ?
-				ItemType.BUBBLE_ITEM : ItemType.BUBBLE_STATIONARY];
+				ItemType.BUBBLE_CLEAR : ItemType.BUBBLE_STATIONARY];
 		}
 	}
 
@@ -1837,4 +1837,13 @@ namespace Fantastic_Fist_Archipelago_Client
 			return ItemManager.itemUnlocks[ItemType.TREE];
 		}
 	}
+
+	/*[HarmonyPatch(typeof(LevelSelect), "EnterLevel")]
+	public static class LevelSelectPatch
+	{
+		private static void Prefix(LevelSelect __instance)
+		{
+			Melon<Core>.Logger.Msg(__instance.LevelObject.name);
+		}
+	}*/
 }

@@ -32,10 +32,10 @@ namespace Fantastic_Fist_Archipelago_Client
 		SLIDING_BLOCK_CRYSTAL,          //Final_BigBox
 		SLIDING_BLOCK_GALACTIC,         //FinaleSlider
 		//Boss Blocks
-		STAR_BLOCK_PHYSICS,             //Starblock, Starblock_W2, Boss3Starblock
+		STAR_BLOCK_STANDARD,            //Starblock, Starblock_W2, Boss3Starblock
 		STAR_BLOCK_HOLD,                //Boss3Starblock_Lock
 		STAR_BLOCK_DELAY,               //Boss3_IceStar
-		HEART_BLOCK_PHYSICS,            //Boss3Heartblock_N
+		HEART_BLOCK_STANDARD,           //Boss3Heartblock_N
 		HEART_BLOCK_SLIDING,            //Boss3_HeartFaceNeutral, Boss3_HeartFaceA
 		HEART_BLOCK_DELAY,              //Boss3_HeartFaceB
 		//Pop Blocks
@@ -66,13 +66,15 @@ namespace Fantastic_Fist_Archipelago_Client
 		SKULL_RING_TIMED,               //MagicSkull_3B
 		SKULL_RING_HOLD_DISABLE,        //MagicSkull, LoneSkullGen
 		SKULL_RING_TIMED_DISABLE,       //MagicSkull_3B
-		//Gorbs
+		//Enemies
 		GUBE,                           //W1Gube, W41x1, Gobe
 		GORB_HOLD,                      //FinalGhost
 		GORB_DELAY,                     //FinalGhost_B
+		PIXIE,                          //Pixie
 		GUBE_DISABLE,                   //W1Gube, W41x1, Gobe
 		GORB_HOLD_DISABLE,              //FinalGhost
 		GORB_DELAY_DISABLE,             //FinalGhost_B
+		PIXIE_DISABLE,                  //Pixie
 		//Vivi Blocks
 		VIVI_BLOCK_STANDARD,            //ViviPunchBlock
 		VIVI_BLOCK_HOLD,                //ViviPunchBlock_W3A
@@ -108,12 +110,12 @@ namespace Fantastic_Fist_Archipelago_Client
 		BUBBLE_STATIONARY,              //Bubble
 		BUBBLE_KEY,                     //Bubble_Key
 		BUBBLE_NUMBER,                  //PreBoss_Pillar, StarBubble
-		BUBBLE_ITEM,                    //W3BBubble, Bubble
+		BUBBLE_CLEAR,                   //W3BBubble, Bubble
 		BUBBLE_HONEY,                   //HoneyBubble, Col_Icecube
 		//Balloons
 		BALLOON_RED,                    //Balloon
 		BALLOON_BLUE,                   //Balloon_Impulse
-		BALLOON_METAL,                  //LeadBalloon, LeadBalloon_Frostbite
+		BALLOON_LEAD,                  //LeadBalloon, LeadBalloon_Frostbite
 		BALLOON_TOGGLE,                 //LeadBalloonCell, LeadBalloonCell_Frostbite
 		//Bombs
 		BOMB_FLOWER,                    //BombFruitFruitBomb
@@ -136,13 +138,13 @@ namespace Fantastic_Fist_Archipelago_Client
 		GRAVITY_WATER_DOWN,             //Reflection_Infinite
 		GRAVITY_FIST,                   //SplitScreen_Tool
 		GRAVITY_ANCHOR,					//SpireGravityAnchor
-		//Elevators
-		ELEVATOR_ARROW,                 //W2Slider_Take2
-		ELEVATOR_HOLD,                  //Girder
-		ELEVATOR_HIVE,                  //CarryPlat
+		//Lifts
+		LIFT_ARROW,						//W2Slider_Take2
+		LIFT_HOLD,						//Girder
+		LIFT_HIVE,						//CarryPlat
 		//Semisolids
-		SEMISOLID_BLUE,					//Mod_PropBlock_Blue
-		SEMISOLID_PINK,					//Mod_PropBlock_Pink
+		SEMISOLID_STANDARD,				//Mod_PropBlock_Blue
+		SEMISOLID_INVERTED,				//Mod_PropBlock_Pink
 		SEMISOLID_TOGGLE,               //Mod_PropBlock_Punch
 		//Specific Items
 		//World 1
@@ -156,8 +158,6 @@ namespace Fantastic_Fist_Archipelago_Client
 		GLASS_BLOCK,                    //W3B_Punchappear_H, W3B_Punchappear_B
 		FLASHLIGHT,                     //NewDarkness
 		//World 4
-		PIXIE,                          //Pixie
-		PIXIE_DISABLE,                  //Pixie
 		THERMAL,                        //Whirl
 		GOLF_BALL,                      //W41x1
 		GOLF_CART,                      //Player

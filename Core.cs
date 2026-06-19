@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 
 [assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "1.0.0", "WaluigiGoesWa", null)]
 [assembly: MelonGame("100th Coin", "Fantastic Fist")]
@@ -28,6 +29,9 @@ namespace Fantastic_Fist_Archipelago_Client
         public static bool useTestItems;
         public static readonly string useTestItemsKey = "Software\\Fantastic Fist Archipelago Client\\Test Item Types";
 
+		private Vector3 gateway = Vector3.zero;
+
+        private MessageManager messageManager = new MessageManager();
 
 		public override void OnInitializeMelon()
         {
@@ -38,15 +42,20 @@ namespace Fantastic_Fist_Archipelago_Client
             if (Registry.CurrentUser.OpenSubKey(useTestItemsKey, true) != null)
             {
                 LoggerInstance.Msg("Using test items.");
-				foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
-                {
-                    int itemTypeValue = GetTestItemTypeValueFromRegistry(itemType);
-                    ItemManager.itemUnlocks.Add(itemType, itemTypeValue == 11);
-                }
+                RevertTestItems();
 			}
+            else
+            {
+				foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
+				{
+                    ItemManager.itemUnlocks[itemType] = false;
+				}
+			}
+
+            LocationManager.InitializeLocations();
 		}
 
-        private int GetTestItemTypeValueFromRegistry(ItemType itemType)
+		private int GetTestItemTypeValueFromRegistry(ItemType itemType)
         {
 			RegistryKey key = Registry.CurrentUser.OpenSubKey(useTestItemsKey, true);
 
@@ -57,9 +66,23 @@ namespace Fantastic_Fist_Archipelago_Client
             return keyValue;
         }
 
+        private void RevertTestItems()
+        {
+			LoggerInstance.Msg("Reverting items.");
+            messageManager.AddMessageToQueue("Reverting Items.");
+            ItemManager.itemUnlocks.Clear();
+			foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
+			{
+				int itemTypeValue = GetTestItemTypeValueFromRegistry(itemType);
+				ItemManager.itemUnlocks.Add(itemType, itemTypeValue == 11);
+			}
+		}
+
 		public override void OnFixedUpdate()
 		{
 			Locker.UpdateLockAllGameObjects();
+
+            messageManager.UpdateSimulator();
 		}
 
 		public override void OnUpdate()
@@ -120,28 +143,46 @@ namespace Fantastic_Fist_Archipelago_Client
                 if (!debugMode)
                 {
 					LoggerInstance.Msg("Turned debug mode on");
+                    messageManager.AddMessageToQueue("Turned debug mode on");
 					GameObject.Find("Player").GetComponent<Vivi_movement>().Deathh.DebugInvuln = true;
                     debugMode = true;
 				}
                 else
                 {
                     LoggerInstance.Msg("Turned debug mode off");
+					messageManager.AddMessageToQueue("Turned debug mode off");
 					GameObject.Find("Player").GetComponent<Vivi_movement>().Deathh.DebugInvuln = false;
                     debugMode = false;
                 }
             }
+
+            //Gateway
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+				GameObject.Find("Player").transform.position = gateway;
+				LoggerInstance.Msg("Gateway used");
+                messageManager.AddMessageToQueue("Gateway used");
+			}
+            if (Input.GetKeyDown (KeyCode.DownArrow))
+            {
+                gateway = GameObject.Find("Player").transform.position;
+				LoggerInstance.Msg("Gateway set");
+                messageManager.AddMessageToQueue("Gateway set");
+			}
 
             //Change Debug Value
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 ++debugValue;
                 LoggerInstance.Msg("Debug value is now " + debugValue);
+                messageManager.AddMessageToQueue("Debug value is now " + debugValue);
             }
             else if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 --debugValue;
                 LoggerInstance.Msg("Debug value is now " + debugValue);
-            }
+				messageManager.AddMessageToQueue("Debug value is now " + debugValue);
+			}
 
             if (Input.GetKeyDown(KeyCode.Alpha0))
             {
@@ -183,6 +224,10 @@ namespace Fantastic_Fist_Archipelago_Client
 			{
 				ToggleItems(9);
 			}
+            if (Input.GetKeyDown(KeyCode.Minus))
+            {
+                RevertTestItems();
+            }
 		}
 
         private void ToggleItems(int toggleValue)
@@ -194,6 +239,7 @@ namespace Fantastic_Fist_Archipelago_Client
 				if (itemTypeValue == toggleValue)
                 {
                     LoggerInstance.Msg("Turning " + itemType.ToString() + " " + (ItemManager.itemUnlocks[itemType] ? "off" : "on"));
+                    messageManager.AddMessageToQueue("Turning " + itemType.ToString() + " " + (ItemManager.itemUnlocks[itemType] ? "off" : "on"));
                     ItemManager.itemUnlocks[itemType] = !ItemManager.itemUnlocks[itemType];
                 }
 			}

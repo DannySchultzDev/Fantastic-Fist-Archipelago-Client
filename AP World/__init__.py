@@ -1,0 +1,1 @@
+from .world import FantasticFistWorld as FantasticFistWorld

@@ -1164,4 +1164,348 @@ ITEM_REQUIREMENTS = {
                               (HAS_ICE_BLOCK_LAUNCHERS & HAS_ICE_BLOCKS & 
                                HAS_ICE_KEY_BLOCKS),
                               (HAS_ICE_BLOCK_LAUNCHERS & HAS_ICE_BLOCKS)],
+    #Forgotten Archives
+    "Forgotten Archives Room 1 Door": [(HAS_PEARL_BLOCK_LAUNCHERS & HAS_KEY_QUARTETS &
+                                        HAS_TIMER_BUTTONS),
+                                       (HAS_PEARL_BLOCK_LAUNCHERS & HAS_KEY_QUARTETS &
+                                        HAS_TIMER_BUTTONS),
+                                       (HAS_PEARL_BLOCK_LAUNCHERS & HAS_KEY_QUARTETS &
+                                        HAS_TIMER_BUTTONS),
+                                       (HAS_PEARL_BLOCK_LAUNCHERS & HAS_KEY_QUARTETS &
+                                        HAS_TIMER_BUTTONS)],
+    "Forgotten Archives Checkpoint 1": [(HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS),
+                                        (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS),
+                                        (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS),
+                                        (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS)],
+    "Forgotten Archives Room 2 Door": [(HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS &
+                                        HAS_KEY_QUARTETS),
+                                       (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS &
+                                        HAS_KEY_QUARTETS),
+                                       (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS &
+                                        HAS_KEY_QUARTETS),
+                                       (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS &
+                                        HAS_KEY_QUARTETS)],
+    "Forgotten Archives Coin 1": [(HAS_TIMER_BUTTONS & HAS_GREEN_BUBBLES),
+                                  (HAS_TIMER_BUTTONS),
+                                  (HAS_TIMER_BUTTONS),
+                                  (HAS_TIMER_BUTTONS)],
+    "Forgotten Archives Room 3 Door": [(HAS_TIMER_BUTTONS),
+                                       (HAS_TIMER_BUTTONS),
+                                       (HAS_TIMER_BUTTONS),
+                                       (HAS_TIMER_BUTTONS)],
+    "Forgotten Archives Load Bearing Collectible": [(HAS_TIMER_BUTTONS & HAS_KEY_BUBBLES &
+                                                     HAS_GREEN_BUBBLES & HAS_RED_PEARL_LAUNCHERS &
+                                                     HAS_LEAD_BALLOONS & HAS_RED_FIRE_RINGS &
+                                                     HAS_RED_BALLOONS),
+                                                    (HAS_TIMER_BUTTONS & HAS_KEY_BUBBLES &
+                                                     HAS_GREEN_BUBBLES & HAS_RED_PEARL_LAUNCHERS &
+                                                     HAS_RED_FIRE_RINGS & HAS_RED_BALLOONS),
+                                                    (HAS_TIMER_BUTTONS & HAS_KEY_BUBBLES &
+                                                     HAS_GREEN_BUBBLES & HAS_RED_PEARL_LAUNCHERS &
+                                                     HAS_RED_FIRE_RINGS & HAS_RED_BALLOONS),
+                                                    (HAS_TIMER_BUTTONS & HAS_KEY_BUBBLES &
+                                                     HAS_GREEN_BUBBLES & HAS_RED_PEARL_LAUNCHERS &
+                                                     HAS_RED_FIRE_RINGS & HAS_RED_BALLOONS)],
+    "Forgotten Archives Room 4 Door": [(HAS_TIMER_BUTTONS & HAS_KEY_BUBBLES &
+                                        HAS_GREEN_BUBBLES & HAS_RED_FIRE_RINGS & 
+                                        HAS_DIRECTIONAL_BUMPERS),
+                                       (HAS_TIMER_BUTTONS & HAS_KEY_BUBBLES &
+                                        HAS_RED_FIRE_RINGS & HAS_DIRECTIONAL_BUMPERS),
+                                       (HAS_TIMER_BUTTONS & HAS_KEY_BUBBLES &
+                                        HAS_RED_FIRE_RINGS & HAS_DIRECTIONAL_BUMPERS),
+                                       (HAS_TIMER_BUTTONS & HAS_KEY_BUBBLES &
+                                        HAS_RED_FIRE_RINGS & HAS_DIRECTIONAL_BUMPERS)],
+    "Forgotten Archives Checkpoint 2": [(HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS),
+                                        (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS),
+                                        (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS),
+                                        (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS)],
+    "Forgotten Archives Checkpoint 3": [(HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS),
+                                        (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS),
+                                        (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS),
+                                        (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS)],
+    "Forgotten Archives Coin 2": [(HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS &
+                                   HAS_RED_BALLOONS),
+                                  (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS &
+                                   HAS_RED_BALLOONS),
+                                  (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS),
+                                  (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS)],
+    "Forgotten Archives Level Clear": [(HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS &
+                                        HAS_KEY_QUARTETS & HAS_RED_FIRE_RINGS &
+                                        HAS_LEAD_BALLOONS),
+                                       (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS &
+                                        HAS_KEY_QUARTETS & HAS_RED_FIRE_RINGS),
+                                       (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS &
+                                        HAS_KEY_QUARTETS & HAS_RED_FIRE_RINGS),
+                                       (HAS_GREEN_BUBBLES & HAS_TIMER_BUTTONS &
+                                        HAS_KEY_QUARTETS & HAS_RED_FIRE_RINGS)],
+    #The Scenic Route
+    "The Scenic Route Room 1 Door": [(HAS_RED_BALLOONS & HAS_SNAKE_BLOCKS &
+                                      HAS_RED_FIRE_RINGS & HAS_GREEN_BUBBLES &
+                                      HAS_LEAD_BALLOONS & HAS_BOMB_FLOWERS),
+                                     (HAS_RED_BALLOONS & HAS_SNAKE_BLOCKS &
+                                      HAS_RED_FIRE_RINGS & HAS_GREEN_BUBBLES &
+                                      HAS_LEAD_BALLOONS & HAS_BOMB_FLOWERS),
+                                     (HAS_RED_BALLOONS & HAS_SNAKE_BLOCKS &
+                                      HAS_RED_FIRE_RINGS),
+                                     (HAS_RED_BALLOONS & HAS_SNAKE_BLOCKS &
+                                      HAS_RED_FIRE_RINGS)],
+    "The Scenic Route Checkpoint 1": [(HAS_BLUE_FIRE_RINGS & HAS_SNAKE_BLOCKS &
+                                       HAS_PEARL_BLOCK_LAUNCHERS & HAS_RED_BALLOONS),
+                                      (HAS_BLUE_FIRE_RINGS & HAS_SNAKE_BLOCKS &
+                                       HAS_PEARL_BLOCK_LAUNCHERS),
+                                      (HAS_BLUE_FIRE_RINGS & HAS_SNAKE_BLOCKS &
+                                       HAS_PEARL_BLOCK_LAUNCHERS),
+                                      (HAS_BLUE_FIRE_RINGS & HAS_SNAKE_BLOCKS)],
+    "The Scenic Route Room 2 Door": [(HAS_BLUE_FIRE_RINGS & HAS_SNAKE_BLOCKS &
+                                      HAS_PEARL_BLOCK_LAUNCHERS & HAS_RED_BALLOONS &
+                                      HAS_ARROW_LIFTS & HAS_GREEN_BUBBLES),
+                                     (HAS_BLUE_FIRE_RINGS & HAS_SNAKE_BLOCKS &
+                                      HAS_PEARL_BLOCK_LAUNCHERS & HAS_ARROW_LIFTS & 
+                                      HAS_GREEN_BUBBLES),
+                                     (HAS_BLUE_FIRE_RINGS & HAS_SNAKE_BLOCKS &
+                                      HAS_PEARL_BLOCK_LAUNCHERS & HAS_ARROW_LIFTS &
+                                      HAS_GREEN_BUBBLES),
+                                     (HAS_BLUE_FIRE_RINGS & HAS_SNAKE_BLOCKS &
+                                      HAS_ARROW_LIFTS & HAS_GREEN_BUBBLES)],
+    "The Scenic Route Room 3 Door": [(HAS_BLUE_FIRE_RINGS & HAS_RED_PEARL_LAUNCHERS &
+                                      HAS_BOMB_FLOWERS),
+                                     (HAS_BLUE_FIRE_RINGS & HAS_RED_PEARL_LAUNCHERS &
+                                      HAS_BOMB_FLOWERS),
+                                     (HAS_BLUE_FIRE_RINGS & HAS_RED_PEARL_LAUNCHERS &
+                                      HAS_BOMB_FLOWERS),
+                                     (HAS_BLUE_FIRE_RINGS & HAS_RED_PEARL_LAUNCHERS &
+                                      HAS_BOMB_FLOWERS)],
+    "The Scenic Route Room 4 Door": [(HAS_BLUE_FIRE_RINGS & HAS_STANDARD_PHYSICS_BLOCKS &
+                                      HAS_TETHERS & HAS_LEAD_BALLOONS),
+                                     (HAS_BLUE_FIRE_RINGS & HAS_STANDARD_PHYSICS_BLOCKS &
+                                      HAS_TETHERS),
+                                     (HAS_BLUE_FIRE_RINGS & HAS_STANDARD_PHYSICS_BLOCKS),
+                                     (HAS_BLUE_FIRE_RINGS & HAS_STANDARD_PHYSICS_BLOCKS)],
+    "The Scenic Route Room 5 Door": [(HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_BLOCKS &
+                                      HAS_YELLOW_BLOCK_LAUNCHERS),
+                                     (HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_BLOCKS &
+                                      HAS_YELLOW_BLOCK_LAUNCHERS),
+                                     (HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_BLOCKS &
+                                      HAS_YELLOW_BLOCK_LAUNCHERS),
+                                     (HAS_YELLOW_PUNCHAPPEAR_BLOCKS)],
+    "The Scenic Route Room 6 Door": [(HAS_BLUE_FIRE_RINGS & HAS_GLASS_BLOCKS &
+                                      HAS_BLUE_PUNCHAPPEAR_BLOCKS & HAS_BLUE_SWITCHES & 
+                                      HAS_STANDARD_POP_BLOCKS & HAS_BLUE_CRYSTAL_LAUNCHERS),
+                                     (HAS_BLUE_FIRE_RINGS & HAS_GLASS_BLOCKS &
+                                      HAS_BLUE_PUNCHAPPEAR_BLOCKS & HAS_BLUE_SWITCHES &
+                                      HAS_STANDARD_POP_BLOCKS & HAS_BLUE_CRYSTAL_LAUNCHERS),
+                                     (HAS_BLUE_FIRE_RINGS & HAS_GLASS_BLOCKS &
+                                      HAS_BLUE_PUNCHAPPEAR_BLOCKS & HAS_BLUE_SWITCHES &
+                                      HAS_STANDARD_POP_BLOCKS & HAS_BLUE_CRYSTAL_LAUNCHERS),
+                                     (HAS_BLUE_FIRE_RINGS & (HAS_STANDARD_POP_BLOCKS | (
+                                      HAS_BLUE_PUNCHAPPEAR_BLOCKS & HAS_BLUE_SWITCHES)) &
+                                      HAS_BLUE_CRYSTAL_LAUNCHERS)],
+    "The Scenic Route Coin 1": [(HAS_YELLOW_SKULL_RINGS),
+                                None,
+                                None,
+                                None],
+    "The Scenic Route Level Clear": [HAS_YELLOW_SKULL_RINGS,
+                                     None,
+                                     None,
+                                     None],
+    #The Timeless Temple
+    "The Timeless Temple Room 1 Door": [(HAS_YELLOW_PHYSICS_BLOCKS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS),
+                                        (HAS_YELLOW_PHYSICS_BLOCKS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS),
+                                        (HAS_YELLOW_PHYSICS_BLOCKS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS),
+                                        (HAS_YELLOW_PUNCHAPPEAR_BLOCKS)],
+    "The Timeless Temple Room 2 Door": [(HAS_YELLOW_SKULL_RINGS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS & 
+                                         HAS_YELLOW_SKULL_BLOCKS),
+                                        (HAS_YELLOW_SKULL_RINGS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS),
+                                        (HAS_YELLOW_PUNCHAPPEAR_BLOCKS),
+                                        (HAS_YELLOW_PUNCHAPPEAR_BLOCKS)],
+    "The Timeless Temple Coin 1": [(HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_BLOCKS &
+                                    HAS_YELLOW_SKULL_RINGS),
+                                   (HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_BLOCKS),
+                                   (HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_BLOCKS),
+                                   (HAS_YELLOW_PUNCHAPPEAR_BLOCKS)],
+    "The Timeless Temple Load Bearing Collectible": [(HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_BLOCKS &
+                                                      HAS_YELLOW_SKULL_RINGS & HAS_YELLOW_VIVI_BLOCKS),
+                                                     (HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_BLOCKS &
+                                                      HAS_YELLOW_VIVI_BLOCKS),
+                                                     (HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_BLOCKS &
+                                                      HAS_YELLOW_VIVI_BLOCKS),
+                                                     (HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_VIVI_BLOCKS)],
+    "The Timeless Temple Level Clear": [(HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_BLOCKS & 
+                                         HAS_YELLOW_SKULL_RINGS),
+                                        (HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_BLOCKS),
+                                        (HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_BLOCKS),
+                                        (HAS_YELLOW_PUNCHAPPEAR_BLOCKS)],
+    #Haunted Halls
+    "Haunted Halls Room 1 Door": [(HAS_YELLOW_GORBS & HAS_YELLOW_PHYSICS_BLOCKS &
+                                   HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_SKULL_RINGS),
+                                  (HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_GORBS),
+                                  (HAS_YELLOW_PUNCHAPPEAR_BLOCKS),
+                                  (HAS_YELLOW_PUNCHAPPEAR_BLOCKS)],
+    "Haunted Halls Coin 1": [(HAS_YELLOW_SLIDING_BLOCKS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS &
+                              HAS_YELLOW_GORBS & HAS_YELLOW_SKULL_BLOCKS),
+                             (HAS_YELLOW_SLIDING_BLOCKS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS &
+                              HAS_YELLOW_GORBS & HAS_YELLOW_SKULL_BLOCKS),
+                             (HAS_YELLOW_SLIDING_BLOCKS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS),
+                             (HAS_YELLOW_SLIDING_BLOCKS)],
+    "Haunted Halls Room 2 Door": [(HAS_YELLOW_SLIDING_BLOCKS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS & 
+                                   HAS_YELLOW_SKULL_BLOCKS & HAS_YELLOW_GORBS),
+                                  (HAS_YELLOW_SLIDING_BLOCKS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS & 
+                                   HAS_YELLOW_SKULL_BLOCKS & HAS_YELLOW_GORBS),
+                                  (HAS_YELLOW_SLIDING_BLOCKS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS & 
+                                   HAS_YELLOW_SKULL_BLOCKS),
+                                  (HAS_YELLOW_SLIDING_BLOCKS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS)],
+    "Haunted Halls Room 3 Door": [(HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_BLOCK_LAUNCHERS &
+                                   HAS_YELLOW_GORBS & HAS_YELLOW_SKULL_BLOCKS),
+                                  (HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_BLOCK_LAUNCHERS &
+                                   HAS_YELLOW_GORBS),
+                                  (HAS_YELLOW_PUNCHAPPEAR_BLOCKS & HAS_YELLOW_BLOCK_LAUNCHERS),
+                                  (HAS_YELLOW_PUNCHAPPEAR_BLOCKS)],
+    "Haunted Halls Level Clear": [(HAS_YELLOW_BUMPERS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS &
+                                   HAS_YELLOW_GORBS & HAS_YELLOW_SKULL_BLOCKS),
+                                  (HAS_YELLOW_BUMPERS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS &
+                                   HAS_YELLOW_GORBS),
+                                  (HAS_YELLOW_BUMPERS & HAS_YELLOW_PUNCHAPPEAR_BLOCKS),
+                                  None],
+    #Borrowed Time
+    "Borrowed Time Room 1 Door": [(HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                   HAS_BLUE_SKULL_BLOCKS),
+                                  (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                   HAS_BLUE_SKULL_BLOCKS),
+                                  (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                   HAS_BLUE_SKULL_BLOCKS),
+                                  (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS)],
+    "Borrowed Time Coin 1": [(HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                              HAS_BLUE_SKULL_BLOCKS),
+                             (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                             (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                             (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS)],
+    "Borrowed Time Room 2 Door": [(HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                   HAS_BLUE_SKULL_BLOCKS),
+                                  (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                   HAS_BLUE_SKULL_BLOCKS),
+                                  (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                   HAS_BLUE_SKULL_BLOCKS),
+                                  (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS)],
+    "Borrowed Time Room 3 Door": [(HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                   HAS_BLUE_SKULL_RINGS & HAS_BLUE_SKULL_BLOCKS),
+                                  (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                                  (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                                  (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS)],
+    "Borrowed Time Level Clear": [(HAS_CLEAR_BUBBLES & HAS_BLUE_SWITCHES &
+                                   HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                                  (HAS_CLEAR_BUBBLES & HAS_BLUE_SWITCHES &
+                                   HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                                  (HAS_CLEAR_BUBBLES),
+                                  (HAS_CLEAR_BUBBLES)],
+    #Nyctophobia
+    "Nyctophobia Coin 1": [(HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                           (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                           (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                           (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS)],
+    "Nyctophobia Room 1 Door": [(HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                                (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                                (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                                (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS)],
+    "Nyctophobia Coin 2": [(HAS_CLEAR_BUBBLES),
+                           (HAS_CLEAR_BUBBLES),
+                           (HAS_CLEAR_BUBBLES),
+                           (HAS_CLEAR_BUBBLES)],
+    "Nyctophobia Room 2 Door": [(HAS_CLEAR_BUBBLES & HAS_BLUE_SWITCHES &
+                                 HAS_BLUE_PUNCHAPPEAR_BLOCKS & HAS_BLUE_BLOCK_LAUNCHERS),
+                                (HAS_CLEAR_BUBBLES & HAS_BLUE_SWITCHES &
+                                 HAS_BLUE_PUNCHAPPEAR_BLOCKS & HAS_BLUE_BLOCK_LAUNCHERS),
+                                (HAS_CLEAR_BUBBLES & HAS_BLUE_SWITCHES &
+                                 HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                                (HAS_CLEAR_BUBBLES & HAS_BLUE_SWITCHES &
+                                 HAS_BLUE_PUNCHAPPEAR_BLOCKS)],
+    "Nyctophobia Coin 3": [(HAS_CLEAR_BUBBLES & HAS_GLASS_BLOCKS),
+                           (HAS_CLEAR_BUBBLES & HAS_GLASS_BLOCKS),
+                           (HAS_CLEAR_BUBBLES & HAS_GLASS_BLOCKS),
+                           (HAS_CLEAR_BUBBLES & HAS_GLASS_BLOCKS)],
+    "Nyctophobia Room 3 Door": [(HAS_CLEAR_BUBBLES & HAS_GLASS_BLOCKS &
+                                 HAS_BLUE_BLOCK_LAUNCHERS),
+                                (HAS_CLEAR_BUBBLES & HAS_GLASS_BLOCKS &
+                                 HAS_BLUE_BLOCK_LAUNCHERS),
+                                (HAS_CLEAR_BUBBLES & HAS_GLASS_BLOCKS),
+                                (HAS_CLEAR_BUBBLES & HAS_GLASS_BLOCKS)],
+    "Nyctophobia Checkpoint 1": [(HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                  HAS_CLEAR_BUBBLES & HAS_BLUE_SKULL_RINGS),
+                                 (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                  HAS_CLEAR_BUBBLES),
+                                 (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                  HAS_CLEAR_BUBBLES),
+                                 None],
+    "Nyctophobia Coin 4": [(HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                            HAS_CLEAR_BUBBLES & HAS_BLUE_SKULL_RINGS &
+                            HAS_STANDARD_POP_BLOCKS),
+                           (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                            HAS_CLEAR_BUBBLES),
+                           (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                            HAS_CLEAR_BUBBLES),
+                           (None)],
+    "Nyctophobia Room 4 Door": [(HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                  HAS_CLEAR_BUBBLES & HAS_BLUE_SKULL_RINGS &
+                                  HAS_STANDARD_POP_BLOCKS),
+                                (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                 HAS_CLEAR_BUBBLES & HAS_STANDARD_POP_BLOCKS),
+                                (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                 HAS_CLEAR_BUBBLES & HAS_STANDARD_POP_BLOCKS),
+                                (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                 HAS_STANDARD_POP_BLOCKS)],
+    "Nyctophobia Coin 5": [(HAS_BLUE_GORBS & HAS_CLEAR_BUBBLES),
+                           (HAS_BLUE_GORBS & HAS_CLEAR_BUBBLES),
+                           (HAS_BLUE_GORBS & HAS_CLEAR_BUBBLES),
+                           (HAS_BLUE_GORBS)],
+    "Nyctophobia Level Clear": [(HAS_BLUE_GORBS & HAS_CLEAR_BUBBLES &
+                                 HAS_BLUE_BLOCK_LAUNCHERS),
+                                (HAS_BLUE_GORBS & HAS_CLEAR_BUBBLES &
+                                 HAS_BLUE_BLOCK_LAUNCHERS),
+                                (HAS_BLUE_GORBS & HAS_CLEAR_BUBBLES),
+                                (HAS_BLUE_GORBS & (HAS_CLEAR_BUBBLES |
+                                 HAS_BLUE_BLOCK_LAUNCHERS))],
+    #Shifting Walls
+    "Shifting Walls Room 1 Door": [(HAS_STANDARD_POP_BLOCKS),
+                                   (HAS_STANDARD_POP_BLOCKS),
+                                   (HAS_STANDARD_POP_BLOCKS),
+                                   None],
+    "Shifting Walls Room 2 Door": [(HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS &
+                                    HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                    HAS_BLUE_SLIDING_BLOCKS),
+                                   (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS &
+                                    HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                                    HAS_BLUE_SLIDING_BLOCKS),
+                                   (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS &
+                                    HAS_BLUE_SLIDING_BLOCKS),
+                                   None],
+    "Shifting Walls Checkpoint 1": [(HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS),
+                                    (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS),
+                                    (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS),
+                                    (HAS_GLASS_BLOCKS)],
+    "Shifting Walls Coin 1": [(HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS),
+                              (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS),
+                              (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS),
+                              (HAS_GLASS_BLOCKS)],
+    "Shifting Walls Room 3 Door": [(HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS),
+                                   (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS),
+                                   (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS),
+                                   (HAS_GLASS_BLOCKS)],
+    "Shifting Walls Coin 2": [(HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                               HAS_STANDARD_POP_BLOCKS & HAS_BLUE_SKULL_BLOCKS),
+                              (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS & 
+                               HAS_STANDARD_POP_BLOCKS),
+                              (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS &
+                               HAS_STANDARD_POP_BLOCKS),
+                              (HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS)],
+    "Shifting Walls Checkpoint 2": [(HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS &
+                                     HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                                    (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS &
+                                     HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                                    (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS),
+                                    (HAS_GLASS_BLOCKS)],
+    "Shifting Walls Level Clear": [(HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS &
+                                    HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                                   (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS &
+                                    HAS_BLUE_SWITCHES & HAS_BLUE_PUNCHAPPEAR_BLOCKS),
+                                   (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS),
+                                   (HAS_GLASS_BLOCKS & HAS_STANDARD_POP_BLOCKS)],
 }

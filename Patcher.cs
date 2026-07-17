@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using HarmonyLib;
+using JetBrains.Annotations;
 using MelonLoader;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using static System.TimeZoneInfo;
 using static MelonLoader.MelonLogger;
 
 namespace Fantastic_Fist_Archipelago_Client
 {
 	//Test message statement:
 	//Melon<Core>.Logger.Msg("TEST MESSAGE");
+
+	#region Items
 
 	[HarmonyPatch(typeof(SmashBlockMain), "OnTriggerEnter")]
 	public static class SmashBlockPatch
@@ -147,10 +155,13 @@ namespace Fantastic_Fist_Archipelago_Client
 				case "NewPhysBlock":
 				case "NewPhysBlock_Big":
 				case "W2Tether":
-				case "W41x1H":
+				case "W4_Box":
+				case "W4_Honey_Big":
+				case "W4_Honey":
 					type = ItemType.PHYSICS_BLOCK_STANDARD;
 					break;
 				case "W41x1":
+				case "W41x1H":
 				case "Gobe":
 					if (lockBlock.golfBall)
 						type = ItemType.GOLF_BALL;
@@ -1229,7 +1240,7 @@ namespace Fantastic_Fist_Archipelago_Client
 				if (__instance.Vis != null)
 					__instance.Vis.transform.localScale = Vector3.zero;
 			}
-			else if (type == ItemType.BALLOON_LEAD ||  type == ItemType.BALLOON_TOGGLE)
+			else if (type == ItemType.BALLOON_LEAD || type == ItemType.BALLOON_TOGGLE)
 			{
 				__instance.Pop = false;
 				if (__instance.Outline != null)
@@ -1258,7 +1269,7 @@ namespace Fantastic_Fist_Archipelago_Client
 		private static bool Prefix(Page_Buttons __instance)
 		{
 			return ItemManager.itemUnlocks[__instance.ArchiveKeyButton ?
-				ItemType.KEY_QUARTET : (__instance.FinalBoss49Manager ? 
+				ItemType.KEY_QUARTET : (__instance.FinalBoss49Manager ?
 				ItemType.BARREL : ItemType.TIMER_BUTTON)];
 		}
 	}
@@ -1273,7 +1284,7 @@ namespace Fantastic_Fist_Archipelago_Client
 			if (rb == null)
 				return;
 
-			rb.constraints = 
+			rb.constraints =
 				ItemManager.itemUnlocks[ItemType.KEY_BLOCK_INVERTED] ?
 				(RigidbodyConstraints)56 : RigidbodyConstraints.FreezeAll;
 		}
@@ -1364,7 +1375,7 @@ namespace Fantastic_Fist_Archipelago_Client
 		{
 			bool enabled = ItemManager.itemUnlocks[ItemType.LIFT_HIVE];
 
-			for (int childId = 0; childId < __instance.transform.childCount; ++childId )
+			for (int childId = 0; childId < __instance.transform.childCount; ++childId)
 			{
 				__instance.transform.GetChild(childId).gameObject.SetActive(enabled);
 			}
@@ -1396,7 +1407,7 @@ namespace Fantastic_Fist_Archipelago_Client
 				return;
 
 			bool enabled = ItemManager.itemUnlocks[ItemType.TOGGLE_FLOWER];
-			
+
 			if (__instance.Pink)
 			{
 				if (enabled)
@@ -1478,7 +1489,7 @@ namespace Fantastic_Fist_Archipelago_Client
 
 				return false;
 			}
-			
+
 			__instance.GetComponent<SpriteRenderer>().enabled = true;
 			__instance.GetComponent<SphereCollider>().enabled = true;
 
@@ -1498,7 +1509,7 @@ namespace Fantastic_Fist_Archipelago_Client
 		{
 			if (ItemManager.itemUnlocks[ItemType.PIXIE_DISABLE])
 				return false;
-			
+
 			return true;
 		}
 	}
@@ -1559,7 +1570,7 @@ namespace Fantastic_Fist_Archipelago_Client
 			bool enabled = ItemManager.itemUnlocks[ItemType.THERMAL];
 
 			__instance.GetComponent<BoxCollider>().enabled = enabled;
-			
+
 			__instance.transform.parent.GetChild(0).gameObject.SetActive(enabled);
 			__instance.transform.parent.GetChild(1).gameObject.SetActive(enabled);
 			__instance.transform.parent.GetChild(2).gameObject.SetActive(enabled);
@@ -1687,7 +1698,7 @@ namespace Fantastic_Fist_Archipelago_Client
 	{
 		private static bool Prefix(FinalBoss_49_Bubbles __instance)
 		{
-			bool enabled = ItemManager.itemUnlocks[__instance.W3B ? 
+			bool enabled = ItemManager.itemUnlocks[__instance.W3B ?
 				ItemType.BUBBLE_CLEAR : ItemType.BUBBLE_STATIONARY];
 
 			for (int childId = 0; childId < __instance.transform.childCount; ++childId)
@@ -1838,6 +1849,617 @@ namespace Fantastic_Fist_Archipelago_Client
 		}
 	}
 
+	#endregion Items
+
+	#region Menu
+
+	[HarmonyPatch(typeof(FinalTitleButtons), "Update")]
+	public static class TitleButtonUpdatePatch
+	{
+		private static bool Prefix(FinalTitleButtons __instance)
+		{
+			if (__instance.EnterSaveFile || __instance.EraseSaveFile)
+			{
+				__instance.gameObject.SetActive(false);
+				Core.titleScreenTransitionObject = __instance.Transition;
+
+				return false;
+			}
+			else if (Core.CropString(__instance.gameObject.name).Equals("Title_FileSelect_Erase"))
+			{
+				__instance.gameObject.SetActive(false);
+
+				GameObject apSetupPanel = GameObject.Find("ApSetupPanel");
+				if (apSetupPanel == null)
+				{
+					Core.fantasticFistFont = __instance.GetComponent<TextMesh>().font;
+					Core.fantasticFistFontMaterials = __instance.GetComponent<MeshRenderer>().materials;
+
+					Melon<Core>.Logger.Msg("Setting up ApSetupPanel");
+					apSetupPanel = new GameObject("ApSetupPanel");
+					apSetupPanel.transform.parent = __instance.transform.parent;
+					apSetupPanel.transform.localPosition = new Vector3(0, 0, -10);
+					apSetupPanel.transform.localScale = Vector3.one * .03f;
+
+					var addressLabel = TextMeshSetup.Setup("AddressLabel", "Address", apSetupPanel);
+					addressLabel.Item1.transform.localPosition = Vector3.up * 50;
+					var addressTextBox = TextMeshSetup.Setup("AddressTextBox", "archipelago.gg:12345", apSetupPanel);
+					addressTextBox.Item1.transform.localPosition = Vector3.up * 25;
+					addressTextBox.Item2.color = Color.yellow;
+					var slotNameLabel = TextMeshSetup.Setup("SlotNameLabel", "Slot Name", apSetupPanel);
+					slotNameLabel.Item1.transform.localPosition = Vector3.up * 0;
+					var slotNameTextBox = TextMeshSetup.Setup("SlotNameTextBox", "Player1", apSetupPanel);
+					slotNameTextBox.Item1.transform.localPosition = Vector3.up * -25;
+					var passwordLabel = TextMeshSetup.Setup("PasswordLabel", "Password", apSetupPanel);
+					passwordLabel.Item1.transform.localPosition = Vector3.up * -50;
+					var passwordTextBox = TextMeshSetup.Setup("SlotNameTextBox", "", apSetupPanel);
+					passwordTextBox.Item1.transform.localPosition = Vector3.up * -75;
+					var connectButton = TextMeshSetup.Setup("ConnectButton", "Connect", apSetupPanel);
+					connectButton.Item1.transform.localPosition = Vector3.up * -100;
+
+					if (File.Exists(Core.AP_SETUP_FILEPATH))
+					{
+						string dataToRead = File.ReadAllText(Core.AP_SETUP_FILEPATH);
+						string[] splitDataToRead = dataToRead.Split('\n');
+						if (splitDataToRead.Length == 3)
+						{
+							addressTextBox.Item2.text = splitDataToRead[0].Trim();
+							slotNameTextBox.Item2.text = splitDataToRead[1].Trim();
+							passwordTextBox.Item2.text = splitDataToRead[2].Trim();
+						}
+					}
+
+					Core.apSetupPanel = apSetupPanel;
+					Core.apSetupSelectedIndex = 0;
+				}
+
+				return false;
+			}
+			return true;
+		}
+	}
+
+	public static class TextMeshSetup
+	{
+		public static (GameObject, TextMesh) Setup(string textMeshName, string text, GameObject parent)
+		{
+			GameObject textMeshGameObject = new GameObject(textMeshName);
+			textMeshGameObject.transform.parent = parent.transform;
+			textMeshGameObject.transform.localPosition = Vector3.zero;
+			textMeshGameObject.transform.localScale = Vector3.one;
+			TextMesh textMesh = textMeshGameObject.AddComponent<TextMesh>();
+			textMesh.font = Core.fantasticFistFont;
+			textMesh.text = text;
+			textMesh.anchor = TextAnchor.MiddleCenter;
+			MeshRenderer meshRenderer = textMeshGameObject.GetComponent<MeshRenderer>();
+			meshRenderer.materials = Core.fantasticFistFontMaterials;
+
+			return (textMeshGameObject, textMesh);
+		}
+	}
+
+	[HarmonyPatch(typeof(ViviMap), "OnEnable")]
+	public static class InitialViviMovePatch
+	{
+		public static void Prefix(ViviMap __instance)
+		{
+			PathManager.UpdatePathAccess();
+
+			if (Core.viviMapInitialMove)
+			{
+				Global.Dataholder.MapWorld = 1f;
+				__instance.CurrentLevel = Global.Dataholder.LevelList[0].MapPosition.GetComponent<LevelSelect>();
+				__instance.transform.position = new Vector3(Global.Dataholder.LevelList[0].MapPosition.transform.position.x, Global.Dataholder.LevelList[0].MapPosition.transform.position.y + 0.3625f, Global.Dataholder.VVMap.transform.position.z);
+				__instance.Honeyed = false;
+
+				Core.viviMapInitialMove = false;
+
+				if (__instance.PHold.Inside)
+				{
+					__instance.PHold.InsideTransition.transform.position = new Vector3(__instance.PHold.CPath.Dest.transform.position.x, __instance.PHold.CPath.Dest.transform.position.y, __instance.PHold.InsideTransition.transform.position.z);
+					__instance.PHold.TransitionTimer = 0.5f;
+					__instance.PHold.AffectInsideCover = true;
+					__instance.PHold.Inside = false;
+				}
+
+				Melon<Core>.Logger.Msg("Moved Vivi to 1-1");
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(ViviMap), "Update")]
+	public static class ViviMapPatch
+	{
+		public static void Prefix()
+		{
+			CoinLocationsUpdate.UpdateCoinLocations();
+		}
+	}
+
+	[HarmonyPatch(typeof(GoalPillar), "OnTriggerStay")]
+	public static class GoalPillarSecretPatchOnTriggerStay
+	{
+		public static bool Prefix(GoalPillar __instance, Collider other)
+		{
+			if (!__instance.SecretExitDoorPillar)
+				return true;
+
+			if (!(other.tag == "Player") || __instance.Goal.Active || (__instance.SkullFrog && (!__instance.SkullFrog || Global.Dataholder.Vivi.Touching_CGD <= 0)) || Global.Dataholder.Vivi.Fireworking)
+			{
+				return false;
+			}
+
+			int num = ItemManager.worldItems[WorldItem.COIN];
+			if (num >= __instance.CoinRequirement)
+			{
+				__instance.SecretRoomRingMat.SetFloat("_Fill", 1f);
+				__instance.Goal.Appear = true;
+				__instance.Goal.Disappear = false;
+				__instance.CoinReqTM.color = Color.black;
+				__instance.CoinReqTM.GetComponent<MeshRenderer>().sortingOrder = 25;
+			}
+			else
+			{
+				__instance.NotEnoughTM.gameObject.SetActive(value: true);
+				__instance.SecretRoomRingMat.SetColor("_Color", new Vector4(1f, 0f, 0f, 1f));
+				__instance.CoinReqTM.color = new Vector4(1f, 0f, 0f, 1f);
+			}
+
+			return false;
+		}
+	}
+
+	[HarmonyPatch(typeof(GoalPillar), "Update")]
+	public static class GoalPillarSecretPatchUpdate
+	{
+		public static bool Prefix(GoalPillar __instance)
+		{
+			if (__instance.SecretExitDoorPillar)
+			{
+				int num = ItemManager.worldItems[WorldItem.COIN];
+				if (num >= __instance.CoinRequirement)
+				{
+					__instance.CoinReqTM.text = "!";
+				}
+			}
+			return false;
+		}
+	}
+
+	[HarmonyPatch(typeof(GoalPillar), "Start")]
+	public static class GoalPillarSecretPatchStart
+	{
+		public static bool Prefix(GoalPillar __instance)
+		{
+			if (__instance.SkullFrog)
+			{
+				return false;
+			}
+
+			if (Global.Dataholder.CurrentWorld != 7f)
+			{
+				__instance.SR.sprite = __instance.ColorByWorld[Mathf.RoundToInt(Global.Dataholder.CurrentWorld)];
+			}
+			else if (!Global.Dataholder.PauseFunction.IsGamePaused)
+			{
+				__instance.SR.sprite = null;
+			}
+			else
+			{
+				__instance.SR.sprite = __instance.ColorByWorld[0];
+			}
+
+			if (!Global.Dataholder.PauseFunction.IsGamePaused)
+			{
+				if (Global.Dataholder.CurrentLevel == 18)
+				{
+					__instance.SR.sprite = __instance.ColorByEdgeCase[0];
+				}
+
+				if (Global.Dataholder.CurrentLevel == 44 || Global.Dataholder.CurrentLevel == 10)
+				{
+					__instance.SR.sprite = __instance.ColorByEdgeCase[1];
+				}
+			}
+
+			if (__instance.SecretExitDoorPillar)
+			{
+				string secret_index_order_string = Core.slotData["secret_exit_order"].ToString();
+				string[] secret_index_order_split = secret_index_order_string.Split([ '\n', '\r', '\t', ' ', ',' ]);
+				int[] secret_index_order = new int[]
+				{
+					int.Parse(secret_index_order_split[4].Trim()),
+					int.Parse(secret_index_order_split[9].Trim()),
+					int.Parse(secret_index_order_split[14].Trim()),
+					int.Parse(secret_index_order_split[19].Trim()),
+					int.Parse(secret_index_order_split[24].Trim()),
+					int.Parse(secret_index_order_split[29].Trim()),
+				};
+				int levelToFindIndexOf = -1;
+
+				Melon<Core>.Logger.Msg("Secret exit's original coin req is " + __instance.SETD.CoinReq);
+				Melon<Core>.Logger.Msg("Secret exit's next room index is " + __instance.SETD.NextRoomIndex);
+
+
+				switch (__instance.SETD.CoinReq)
+				{
+					case 10:
+						levelToFindIndexOf = 0;
+						break;
+					case 3:
+						levelToFindIndexOf = 1;
+						break;
+					case 15:
+						if (__instance.SETD.NextRoomIndex == 4)
+							levelToFindIndexOf = 2;
+						else if (__instance.SETD.NextRoomIndex == 3)
+							levelToFindIndexOf = 4;
+						break;
+					case 20:
+						levelToFindIndexOf = 3;
+						break;
+					case 30:
+						levelToFindIndexOf = 5;
+						break;
+					case 100:
+						levelToFindIndexOf = 6;
+						break;
+					default:
+						return false;
+				}
+
+				for (int i = 0; i < secret_index_order.Length; ++i)
+				{
+					if (secret_index_order[i] == levelToFindIndexOf)
+					{
+						string req = "secret_coin_req_" + i;
+						__instance.CoinRequirement = (int)((Int64)Core.slotData[req]);
+					}
+				}
+
+				__instance.CoinReqTM.text = string.Empty + __instance.CoinRequirement;
+				__instance.SecretRoomRingMat.SetColor("_Color", Color.white);
+			}
+			return false;
+		}
+	}
+
+	#endregion Menu
+
+	#region Locations
+
+	[HarmonyPatch(typeof(Notebook), "Update")]
+	public static class NotebookUpdatePatch
+	{
+		public static void Prefix(Notebook __instance)
+		{
+			for (int bestiaryEntry = 0; bestiaryEntry < 11; ++bestiaryEntry)
+				Global.Dataholder.ListOfBestiary[bestiaryEntry] = true;
+			for (int tutorialEntry = 0; tutorialEntry < 6; ++tutorialEntry)
+			{
+				Global.Dataholder.ListOfPages[tutorialEntry] = true;
+				Global.Dataholder.ListOfClearedPages[tutorialEntry] = LocationManager.IsLocationChecked((Location)(200 + tutorialEntry));
+			}
+
+			if (__instance.Chapter == 4)
+			{
+				LocationManager.MarkLocationAsChecked((Location)(__instance.CurrentPage + 270));
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(EnterLevelFromNotebook), "Do")]
+	public static class DisableEnterLevelFromNotebookPatch
+	{
+		public static bool Prefix()
+		{
+			Core.instance.messageManager.AddMessageToQueue("Cannot enter levels through the Notebook while playing Archipelago.");
+			return false;
+		}
+	}
+
+	[HarmonyPatch(typeof(ReplayPageInNotebook), "Do")]
+	public static class ReplayPageButtonPatch
+	{
+		public static void Prefix(ReplayPageInNotebook __instance)
+		{
+			LocationManager.MarkLocationAsChecked((Location)(__instance.Note.CurrentPage + 206));
+		}
+	}
+
+	[HarmonyPatch(typeof(PagesInLevels), "Update")]
+	public static class TutorialPagePatch
+	{
+		public static void Prefix(PagesInLevels __instance)
+		{
+			if (__instance.InFront && Global.Dataholder.GetReboundInputDown(KeyCode.W))
+			{
+				Melon<Core>.Logger.Msg("Opened tutorial pannel " + __instance.ID);
+
+				Location location;
+				switch (__instance.ID)
+				{
+					case 0:
+						if (GameObject.FindObjectsOfType<RoomDoor>().Length == 2)
+						{
+							location = Location.VERTICALITY_TUTORIAL_PANEL;
+						}
+						else if (GameObject.FindObjectsOfType<RoomDoor>().Length == 1)
+						{
+							location = Location.AUTUMNAL_AETHER_TUTORIAL_PANEL;
+						}
+						else
+						{
+							Melon<Core>.Logger.Msg("Invalid tutorial pannel!");
+							return;
+						}
+						break;
+					case 1:
+						location = Location.THE_LIBRARY_TUTORIAL_PANEL_1;
+						break;
+					case 2:
+						location = Location.THE_LIBRARY_TUTORIAL_PANEL_2;
+						break;
+					case 3:
+						location = Location.THE_LIBRARY_TUTORIAL_PANEL_3;
+						break;
+					case 4:
+						location = Location.FORGOTTEN_ARCHIVES_TUTORIAL_PANEL;
+						break;
+					case 5:
+						location = Location.WELCOME_TO_THE_VOID_TUTORIAL_PANEL;
+						break;
+					default:
+						return;
+				}
+
+				LocationManager.MarkLocationAsChecked(location);
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(FinishLevel), "OnTriggerEnter")]
+	public static class GoalPatch
+	{
+		public static void Prefix(Collider other, FinishLevel __instance)
+		{
+			if (!(other.gameObject.tag == "fist") || !__instance.Active)
+			{
+				return;
+			}
+
+			if (__instance.Page)
+			{
+				LocationManager.MarkLocationAsChecked((Location)(Global.Dataholder.PlayingInsidePageID + 200));
+			}
+			else if (__instance.WonAlready)
+			{
+				return;
+			}
+			else if (__instance.DoorToSecretExit)
+			{
+				Melon<Core>.Logger.Msg("Exit is a door to a secret exit");
+			}
+			else if (__instance.LoadBearingRuby)
+			{
+				Melon<Core>.Logger.Msg("Exit is a Load bearing collectible");
+			}
+			else if (__instance.BossFightDoorLock)
+			{
+				Melon<Core>.Logger.Msg("Exit is a boss door");
+			}
+			else if (__instance.W2BossBubble)
+			{
+				Melon<Core>.Logger.Msg("Exit is a Number Bubble");
+			}
+			else
+			{
+				Melon<Core>.Logger.Msg("Exit found: " + __instance.Exit_ID);
+
+				if (LocationManager.exitLocationDictionary.ContainsKey(__instance.Exit_ID))
+					LocationManager.MarkLocationAsChecked(LocationManager.exitLocationDictionary[__instance.Exit_ID]);
+
+				if (__instance.Exit_ID == 49 && (Int64)Core.slotData["goal"] == 1)
+					LocationManager.SetGoal();
+				else if (__instance.Exit_ID == 51 && (Int64)Core.slotData["goal"] == 2)
+					LocationManager.SetGoal();
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(FistCoin), "OnTriggerEnter")]
+	public static class CoinCollectPatch
+	{
+		public static void Prefix(FistCoin __instance, Collider other)
+		{
+			if (!__instance.IsDefinitelyARealCoin || __instance.NotActuallyACoin)
+			{
+				return;
+			}
+
+			if ((__instance.W3BossHeart && __instance.SisterHeart.DoOnce) || !(other.gameObject.tag == "fist") || !Global.Dataholder.IsCurrentlyInALevel || __instance.DoOnce || (!(other.name == "Fist") && !(other.name == "Beam")))
+			{
+				return;
+			}
+
+			if (Global.Dataholder.FistMov.VectorSpeed.magnitude == 0f)
+			{
+				return;
+			}
+
+			Melon<Core>.Logger.Msg("Coin collected: " + __instance.ID);
+
+			if (LocationManager.coinLocationDictionary.ContainsKey(__instance.ID))
+				LocationManager.MarkLocationAsChecked(LocationManager.coinLocationDictionary[__instance.ID]);
+		}
+	}
+
+	[HarmonyPatch(typeof(FistCoin), "Start")]
+	public static class CoinStartPatch
+	{
+		public static void Prefix()
+		{
+			CoinLocationsUpdate.UpdateCoinLocations();
+		}
+	}
+
+	[HarmonyPatch(typeof(FistCoin), "FixedUpdate")]
+	public static class CoinFixedUpdatePatch
+	{
+		public static void Prefix()
+		{
+			CoinLocationsUpdate.UpdateCoinLocations();
+		}
+	}
+
+	public static class CoinLocationsUpdate
+	{
+		public static void UpdateCoinLocations()
+		{
+			foreach (var v in LocationManager.coinLocationDictionary)
+			{
+				Global.Dataholder.ListOfCollectedCoins[v.Key] = LocationManager.IsLocationChecked(v.Value);
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(BossOneFinal), "NextPhase")]
+	public static class BossOnePatch
+	{
+		public static void Prefix(BossOneFinal __instance)
+		{
+			LocationManager.MarkLocationAsChecked((Location)(__instance.Phase + 300));
+		}
+	}
+
+	[HarmonyPatch(typeof(W2Boss_Reznor), "Update")]
+	public static class BossTwoPatch
+	{
+		public static void Prefix(W2Boss_Reznor __instance)
+		{
+			if (__instance.Bulbed && __instance.Heart == null && !__instance.PreBoss)
+			{
+				LocationManager.MarkLocationAsChecked((Location)(__instance.BossMan.Phase + 310));
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(Boss3OrangeBlueHeartManager), "Update")]
+	public static class BossThreePatch
+	{
+		public static void Prefix(Boss3OrangeBlueHeartManager __instance)
+		{
+			if (!__instance.PreHeart && __instance.Appearing)
+			{
+				Location boss3HeartLocation;
+				switch (__instance.BossMan.mode)
+				{
+					case 0:
+						boss3HeartLocation = Location.THE_THRONE_ROOM_HEART_1;
+						break;
+					case 1:
+						boss3HeartLocation = Location.THE_THRONE_ROOM_HEART_2;
+						break;
+					case 2:
+						boss3HeartLocation = Location.THE_THRONE_ROOM_HEART_3;
+						break;
+					default:
+						return;
+				}
+
+				LocationManager.MarkLocationAsChecked(boss3HeartLocation);
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(GolfHole), "OnTriggerEnter")]
+	public static class BossFourPatch
+	{
+		public static void Prefix (GolfHole __instance, Collider other)
+		{
+			if ((bool)other.gameObject.GetComponent<GolfBall>() && __instance.GolfBall == null && !Global.Dataholder.IsInLevelEditor)
+			{
+				LocationManager.MarkLocationAsChecked((Location)(Global.Dataholder.Room + 329));
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(GolfLeaderboards), "Start")]
+	public static class GolfLeaderboardResetPatch
+	{
+		public static void Prefix()
+		{
+			int golfAmt = Global.Dataholder.Room == 0 ? 10 : 0;
+
+			for (int hole = 0; hole < 9; ++hole)
+			{
+				PlayerPrefs.SetInt("GolfRecord_" + Global.Dataholder.CurrentFile + "_Hole:" + hole, golfAmt);
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(Boss5_32_Manager), "OnTriggerEnter")]
+	public static class BossFivePartThirtyTwoPatch
+	{
+		public static void Prefix(Boss5_32_Manager __instance, Collider other)
+		{
+			if (!__instance.DoOnce && __instance.Health <= 0 && ((other.tag == "Fist") || (other.tag == "fist")))
+			{
+				LocationManager.MarkLocationAsChecked(Location.GALACTIC_CENTRAL_POINT_HEART_32);
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(FinalBoss_49_Manager), "OnTriggerEnter")]
+	public static class BossFivePartFortyNinePatch
+	{
+		public static void Prefix(FinalBoss_49_Manager __instance, Collider other)
+		{
+			if ((!(other.tag == "Fist") && !(other.tag == "fist")) || __instance.Health > 0 || Global.Dataholder.Vivi.Deathh.PerformingDeathSequence || __instance.DoOnce)
+			{
+				return;
+			}
+
+			LocationManager.MarkLocationAsChecked(Location.GALACTIC_CENTRAL_POINT_HEART_49);
+		}
+	}
+
+	[HarmonyPatch(typeof(Boss5_37_Bossman), "OnTriggerEnter")]
+	public static class BossFivePartThirtySevenPatch
+	{
+		public static void Prefix(Boss5_37_Bossman __instance, Collider other)
+		{
+			if ((!(other.tag == "Fist") && !(other.tag == "fist")) || __instance.Health > 0 || Global.Dataholder.Vivi.Deathh.PerformingDeathSequence || __instance.DoOnce)
+			{
+				return;
+			}
+
+			FistMovement fistMov = Global.Dataholder.FistMov;
+			if (fistMov.VectorSpeed.magnitude == 0f)
+			{
+				return;
+			}
+
+			LocationManager.MarkLocationAsChecked(Location.GALACTIC_CENTRAL_POINT_HEART_37);
+		}
+	}
+
+	[HarmonyPatch(typeof(Boss5_FinaleHeart), "PAAAAAAAAANCH")]
+	public static class BossFiveFinalePatch
+	{
+		public static void Prefix(Boss5_FinaleHeart __instance)
+		{
+			if (__instance.Health <= 1)
+			{
+				LocationManager.MarkLocationAsChecked(Location.GALACTIC_CENTRAL_POINT_LEVEL_CLEAR);
+
+				if ((Int64)Core.slotData["goal"] == 0)
+					LocationManager.SetGoal();
+			}
+		}
+	}
+
+	#endregion Locations
 	/*[HarmonyPatch(typeof(LevelSelect), "EnterLevel")]
 	public static class LevelSelectPatch
 	{

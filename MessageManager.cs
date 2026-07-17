@@ -61,6 +61,9 @@ namespace Fantastic_Fist_Archipelago_Client
 					currMessage = messageQueue.Dequeue();
 					label.text = currMessage;
 					currMessageStartTime = DateTime.Now;
+					if (Core.fantasticFistFont != null &&
+						label.font != Core.fantasticFistFont)
+						label.font = Core.fantasticFistFont;
 				}
 			}
 			
@@ -121,10 +124,14 @@ namespace Fantastic_Fist_Archipelago_Client
 		public void AddMessageToQueue(string message)
 		{
 			messageQueue.Enqueue(message);
-
 			//Prevent a flood of messages.
 			//if (messageQueue.Count > 15)
 			//	messageQueue.Dequeue();
+		}
+
+		public void ClearQueue()
+		{
+			messageQueue.Clear();
 		}
 	}
 }

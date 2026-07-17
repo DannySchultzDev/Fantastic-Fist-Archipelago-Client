@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Archipelago.MultiClient.Net.Models;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 
@@ -7,8 +9,178 @@ namespace Fantastic_Fist_Archipelago_Client
 {
 	public static class LocationManager
 	{
+		public static bool roomsanity = false;
+		public static bool checkpointsanity = false;
+
 		private static Dictionary<Location, bool> locationsChecked = 
 			new Dictionary<Location, bool>();
+
+		private static Dictionary<Location, string> locationsScouted = 
+			new Dictionary<Location, string>();
+
+		private static Dictionary<Location, bool> locationsSelf =
+			new Dictionary<Location, bool>();
+
+		public static readonly Dictionary<int, Location> coinLocationDictionary =
+			new Dictionary<int, Location>()
+			{
+				{92, Location.INTRODUCTION_COIN_1 },
+				{2, Location.INTRODUCTION_COIN_2 },
+				{14, Location.THE_CAVES_COIN_1 },
+				{0, Location.THE_CAVES_COIN_2 },
+				{1, Location.THE_CAVES_COIN_3 },
+				{11, Location.GET_A_GRIP_COIN_1 },
+				{4, Location.VERTICALITY_COIN_1 },
+				{6, Location.VERTICALITY_COIN_2 },
+				{5, Location.VERTICALITY_COIN_3 },
+				{3, Location.CATCH_A_RIDE_COIN_1 },
+				{10, Location.CATCH_A_RIDE_COIN_2 },
+				{93, Location.CATCH_A_RIDE_COIN_3 },
+				{13, Location.CHAOS_CAVERN_COIN_1 },
+				{12, Location.HOLDING_ON_COIN_1 },
+				{84, Location.CLIFF_WARNING_COIN_1 },
+				{7, Location.THE_LIBRARY_COIN_1 },
+				{8, Location.THE_LIBRARY_COIN_2 },
+				{9, Location.THE_LIBRARY_COIN_3 },
+				{15, Location.MIDNIGHT_GROVE_COIN_1 },
+				{17, Location.MIDNIGHT_GROVE_COIN_2 },
+				{96, Location.MIDNIGHT_GROVE_COIN_3 },
+				{18, Location.BRIARBRUSH_WOODS_COIN_1 },
+				{19, Location.VARIOUS_EXPLOSIVES_COIN_1 },
+				{20, Location.VARIOUS_EXPLOSIVES_COIN_2 },
+				{21, Location.VARIOUS_EXPLOSIVES_COIN_3 },
+				{23, Location.TOGETHER_BY_TETHER_COIN_1 },
+				{24, Location.TOGETHER_BY_TETHER_COIN_2 },
+				{25, Location.TOGETHER_BY_TETHER_COIN_3 },
+				{22, Location.POP_UNLOCK_COIN_1 },
+				{95, Location.POP_UNLOCK_COIN_2 },
+				{28, Location.THE_GATEKEEPER_COIN_1 },
+				{29, Location.THE_GATEKEEPER_COIN_2 },
+				{26, Location.THE_GATEKEEPER_COIN_3 },
+				{94, Location.THE_ELEVATOR_COIN_1 },
+				{27, Location.FROSTBITE_COIN_1 },
+				{98, Location.FORGOTTEN_ARCHIVES_COIN_1 },
+				{99, Location.FORGOTTEN_ARCHIVES_COIN_2 },
+				{97, Location.THE_SCENIC_ROUTE_COIN_1 },
+				{30, Location.THE_TIMELESS_TEMPLE_COIN_1 },
+				{31, Location.HAUNTED_HALLS_COIN_1 },
+				{32, Location.BORROWED_TIME_COIN_1 },
+				{40, Location.NYCTOPHOBIA_COIN_1 },
+				{41, Location.NYCTOPHOBIA_COIN_2 },
+				{42, Location.NYCTOPHOBIA_COIN_3 },
+				{43, Location.NYCTOPHOBIA_COIN_4 },
+				{44, Location.NYCTOPHOBIA_COIN_5 },
+				{45, Location.SHIFTING_WALLS_COIN_1 },
+				{90, Location.SHIFTING_WALLS_COIN_2 },
+				{33, Location.SKULLDUGGERY_COIN_1 },
+				{16, Location.SKULLDUGGERY_COIN_2 },
+				{34, Location.SKULLDUGGERY_COIN_3 },
+				{48, Location.SKULLDUGGERY_COIN_4 },
+				{37, Location.THE_THRONE_ROOM_COIN_1 },
+				{38, Location.THE_THRONE_ROOM_COIN_2 },
+				{39, Location.THE_THRONE_ROOM_COIN_3 },
+				{35, Location.POP_TO_THE_TOP_COIN_1 },
+				{36, Location.POP_TO_THE_TOP_COIN_2 },
+				{46, Location.PERIODIC_PRISON_COIN_1 },
+				{47, Location.PERIODIC_PRISON_COIN_2 },
+				{49, Location.INFINITY_GARDEN_COIN_1 },
+				{50, Location.INFINITY_GARDEN_COIN_2 },
+				{51, Location.INFINITY_GARDEN_COIN_3 },
+				{52, Location.AUTUMNAL_AETHER_COIN_1 },
+				{53, Location.AUTUMNAL_AETHER_COIN_2 },
+				{54, Location.AUTUMNAL_AETHER_COIN_3 },
+				{55, Location.AUTUMNAL_AETHER_COIN_4 },
+				{56, Location.AUTUMNAL_AETHER_COIN_5 },
+				{71, Location.AMONG_THE_STARS_COIN_1 },
+				{72, Location.AMONG_THE_STARS_COIN_2 },
+				{57, Location.DEN_OF_PIXIES_COIN_1 },
+				{58, Location.DEN_OF_PIXIES_COIN_2 },
+				{59, Location.DEN_OF_PIXIES_COIN_3 },
+				{60, Location.HEELS_OVER_HEAD_COIN_1 },
+				{61, Location.THE_HIVE_COIN_1 },
+				{62, Location.THE_HIVE_COIN_2 },
+				{63, Location.THE_HIVE_COIN_3 },
+				{67, Location.THE_FIVE_MILE_SPIRE_COIN_1 },
+				{68, Location.THE_FIVE_MILE_SPIRE_COIN_2 },
+				{69, Location.THE_FIVE_MILE_SPIRE_COIN_3 },
+				{70, Location.THE_FIVE_MILE_SPIRE_COIN_4 },
+				{91, Location.THE_FIVE_MILE_SPIRE_COIN_5 },
+				{64, Location.GUBE_GARDENS_COIN_1 },
+				{65, Location.GUBE_GARDENS_COIN_2 },
+				{66, Location.GUBE_GARDENS_COIN_3 },
+				{74, Location.THE_GOLF_FUNGUS_COIN_1 },
+				{73, Location.OVER_THE_WOODS_COIN_1 },
+				{75, Location.WELCOME_TO_THE_VOID_COIN_1 },
+				{76, Location.WELCOME_TO_THE_VOID_COIN_2 },
+				{77, Location.WELCOME_TO_THE_VOID_COIN_3 },
+				{78, Location.WELCOME_TO_THE_VOID_COIN_4 },
+				{79, Location.WELCOME_TO_THE_VOID_COIN_5 },
+				{85, Location.THE_SKY_IS_FALLING_COIN_1 },
+				{86, Location.THE_SKY_IS_FALLING_COIN_2 },
+				{87, Location.THE_SKY_IS_FALLING_COIN_3 },
+				{88, Location.THE_SKY_IS_FALLING_COIN_4 },
+				{89, Location.THE_SKY_IS_FALLING_COIN_5 },
+				{80, Location.THE_LOOKING_GLASS_COIN_1 },
+				{81, Location.THE_LOOKING_GLASS_COIN_2 },
+				{82, Location.THE_LOOKING_GLASS_COIN_3 },
+				{83, Location.THE_LOOKING_GLASS_COIN_4 }
+			};
+
+		public static readonly Dictionary<int, Location> exitLocationDictionary =
+			new Dictionary<int, Location>()
+			{
+				{0, Location.INTRODUCTION_LEVEL_CLEAR },
+				{1, Location.THE_CAVES_LEVEL_CLEAR },
+				{7, Location.THE_CAVES_LOAD_BEARING_COLLECTIBLE },
+				{2, Location.GET_A_GRIP_LEVEL_CLEAR },
+				{3, Location.VERTICALITY_LEVEL_CLEAR },
+				{10, Location.VERTICALITY_LOAD_BEARING_COLLECTIBLE },
+				{4, Location.CATCH_A_RIDE_LEVEL_CLEAR },
+				{5, Location.CHAOS_CAVERN_LEVEL_CLEAR },
+				{6, Location.HOLDING_ON_LEVEL_CLEAR},
+				{12, Location.FIST_FIGHT_LEVEL_CLEAR },
+				{8, Location.DEPTHS_LEVEL_CLEAR },
+				{9, Location.CLIFF_WARNING_LEVEL_CLEAR },
+				{11, Location.THE_LIBRARY_LEVEL_CLEAR },
+				{13, Location.MIDNIGHT_GROVE_LEVEL_CLEAR },
+				{18, Location.MIDNIGHT_GROVE_LOAD_BEARING_COLLECTIBLE },
+				{14, Location.BRIARBRUSH_WOODS_LEVEL_CLEAR },
+				{15, Location.VARIOUS_EXPLOSIVES_LEVEL_CLEAR },
+				{16, Location.TOGETHER_BY_TETHER_LEVEL_CLEAR },
+				{17, Location.POP_UNLOCK_LEVEL_CLEAR },
+				{23, Location.THE_GATEKEEPER_LEVEL_CLEAR },
+				{19, Location.THE_ELEVATOR_LEVEL_CLEAR },
+				{20, Location.FROSTBITE_LEVEL_CLEAR },
+				{21, Location.FORGOTTEN_ARCHIVES_LEVEL_CLEAR },
+				{22, Location.FORGOTTEN_ARCHIVES_LOAD_BEARING_COLLECTIBLE },
+				{34, Location.THE_SCENIC_ROUTE_LEVEL_CLEAR },
+				{24, Location.THE_TIMELESS_TEMPLE_LEVEL_CLEAR },
+				{31, Location.THE_TIMELESS_TEMPLE_LOAD_BEARING_COLLECTIBLE },
+				{25, Location.HAUNTED_HALLS_LEVEL_CLEAR },
+				{26, Location.BORROWED_TIME_LEVEL_CLEAR },
+				{27, Location.NYCTOPHOBIA_LEVEL_CLEAR },
+				{28, Location.SHIFTING_WALLS_LEVEL_CLEAR },
+				{29, Location.SKULLDUGGERY_LEVEL_CLEAR },
+				{30, Location.THE_THRONE_ROOM_LEVEL_CLEAR },
+				{32, Location.POP_TO_THE_TOP_LEVEL_CLEAR },
+				{33, Location.PERIODIC_PRISON_LEVEL_CLEAR },
+				{35, Location.INFINITY_GARDEN_LEVEL_CLEAR },
+				{43, Location.INFINITY_GARDEN_LOAD_BEARING_COLLECTIBLE },
+				{36, Location.AUTUMNAL_AETHER_LEVEL_CLEAR },
+				{37, Location.AMONG_THE_STARS_LEVEL_CLEAR },
+				{38, Location.DEN_OF_PIXIES_LEVEL_CLEAR },
+				{39, Location.HEELS_OVER_HEAD_LEVEL_CLEAR },
+				{40, Location.THE_HIVE_LEVEL_CLEAR },
+				{41, Location.THE_FIVE_MILE_SPIRE_LEVEL_CLEAR },
+				{42, Location.GUBE_GARDENS_LEVEL_CLEAR },
+				{45, Location.THE_GOLF_FUNGUS_LEVEL_CLEAR },
+				{44, Location.OVER_THE_WOODS_LEVEL_CLEAR },
+				{46, Location.WELCOME_TO_THE_VOID_LEVEL_CLEAR },
+				{47, Location.THE_SKY_IS_FALLING_LEVEL_CLEAR },
+				{48, Location.THE_LOOKING_GLASS_LEVEL_CLEAR },
+				{49, Location.THE_LOOKING_GLASS_UNIVERSAL_BEARING_COLLECTIBLE },
+				{51, Location.HOME_LEVEL_CLEAR}
+			};
 
 		public static bool IsLocationChecked(Location location)
 		{
@@ -17,7 +189,32 @@ namespace Fantastic_Fist_Archipelago_Client
 
 		public static void MarkLocationAsChecked(Location location)
 		{
+			if (!roomsanity && (int)location >= 400 && (int)location <= 831)
+				return;
+			else if (!checkpointsanity && (int)location >= 900 && (int)location <= 941)
+				return;
+			if (locationsChecked[location])
+				return;
+			if (!Core.hasSession)
+			{
+				Core.instance.messageManager.AddMessageToQueue("Dissconnected; Can't mark location: " + GetLocationAsString(location));
+				return;
+			}
+			Core.session.Locations.CompleteLocationChecks((int)location);
 			locationsChecked[location] = true;
+			if (!locationsSelf[location])
+				Core.instance.messageManager.AddMessageToQueue(locationsScouted[location]);
+		}
+
+		public static void SetGoal()
+		{
+			if (!Core.hasSession)
+			{
+				Core.instance.messageManager.AddMessageToQueue("Dissconnected; Can't set goal");
+				return;
+			}
+
+			Core.session.SetGoalAchieved();
 		}
 
 		public static void InitializeLocations()
@@ -25,6 +222,8 @@ namespace Fantastic_Fist_Archipelago_Client
 			foreach (Location location in Enum.GetValues(typeof(Location)))
 			{
 				locationsChecked[location] = false;
+				locationsScouted[location] = string.Empty;
+				locationsSelf[location] = false;
 			}
 		}
 
@@ -40,6 +239,28 @@ namespace Fantastic_Fist_Archipelago_Client
 					sb.Append(" ");
 			}
 			return sb.ToString();
+		}
+
+		public static void PrecheckedLocations(long[] allCheckedLocations)
+		{
+			foreach (long location in allCheckedLocations)
+			{
+				locationsChecked[(Location)location] = true;
+			}
+		}
+
+		public static void ScoutedMissingLocations(Dictionary<long, ScoutedItemInfo> dictionary)
+		{
+			foreach (var location in dictionary)
+			{
+				if (location.Value.Player.Name.Equals(Core.instance.name))
+					locationsSelf[(Location)location.Key] = true;
+				else
+				{
+					locationsSelf[(Location)location.Key] = false;
+					locationsScouted[(Location)location.Key] = "Found " + location.Value.Player.Name + "'s " + location.Value.ItemName;
+				}
+			}
 		}
 	}
 
@@ -200,12 +421,18 @@ namespace Fantastic_Fist_Archipelago_Client
 		GALACTIC_CENTRAL_POINT_LEVEL_CLEAR = 180,
 		HOME_LEVEL_CLEAR = 181,
 		//Tutorial Pages
-		COYOTE_TIME_TUTORIAL = 200,
-		BOX_BOOSTING_TUTORIAL = 201,
-		FAST_FALLING_TUTORIAL = 202,
-		STEEP_SLOPE_KICKS_TUTORIAL = 203,
-		BUBBLE_JUMPS_TUTORIAL = 204,
-		FIREWORKS_TUTORIAL = 205,
+		COYOTE_TIME_TUTORIAL_COMPLETE = 200,
+		BOX_BOOSTING_TUTORIAL_COMPLETE = 201,
+		FAST_FALLING_TUTORIAL_COMPLETE = 202,
+		STEEP_SLOPE_KICKS_TUTORIAL_COMPLETE = 203,
+		BUBBLE_JUMPS_TUTORIAL_COMPLETE = 204,
+		FIREWORKS_TUTORIAL_COMPLETE = 205,
+		COYOTE_TIME_TUTORIAL_OPENED = 206,
+		BOX_BOOSTING_TUTORIAL_OPENED = 207,
+		FAST_FALLING_TUTORIAL_OPENED = 208,
+		STEEP_SLOPE_KICKS_TUTORIAL_OPENED = 209,
+		BUBBLE_JUMPS_TUTORIAL_OPENED = 210,
+		FIREWORKS_TUTORIAL_OPENED = 211,
 		//Tutorial Panels
 		VERTICALITY_TUTORIAL_PANEL = 250,
 		THE_LIBRARY_TUTORIAL_PANEL_1 = 251,
@@ -214,6 +441,18 @@ namespace Fantastic_Fist_Archipelago_Client
 		FORGOTTEN_ARCHIVES_TUTORIAL_PANEL = 254,
 		AUTUMNAL_AETHER_TUTORIAL_PANEL = 255,
 		WELCOME_TO_THE_VOID_TUTORIAL_PANEL = 256,
+		//Bestiary
+		OPEN_THE_BESTIARY_TO_VIVI = 270,
+		OPEN_THE_BESTIARY_TO_THE_FIST = 271,
+		OPEN_THE_BESTIARY_TO_GUBE = 272,
+		OPEN_THE_BESTIARY_TO_SLIDER = 273,
+		OPEN_THE_BESTIARY_TO_THE_WIZARD = 274,
+		OPEN_THE_BESTIARY_TO_GORBS = 275,
+		OPEN_THE_BESTIARY_TO_THE_KING = 276,
+		OPEN_THE_BESTIARY_TO_PIXIES = 277,
+		OPEN_THE_BESTIARY_TO_FAIRY_DRONES = 278,
+		OPEN_THE_BESTIARY_TO_GUBE_RANGER = 279,
+		OPEN_THE_BESTIARY_TO_PAM = 280,
 		//Boss Hits
 		FIST_FIGHT_HEART_1 = 300,
 		FIST_FIGHT_HEART_2 = 301,
@@ -441,19 +680,20 @@ namespace Fantastic_Fist_Archipelago_Client
 		GALACTIC_CENTRAL_POINT_ROOM_1 = 815,
 		GALACTIC_CENTRAL_POINT_ROOM_2 = 816,
 		GALACTIC_CENTRAL_POINT_ROOM_3 = 817,
-		GALACTIC_CENTRAL_POINT_BOSS_ARENA_32 = 818,
-		GALACTIC_CENTRAL_POINT_BOSS_ARENA_49 = 819,
-		GALACTIC_CENTRAL_POINT_BOSS_ARENA_37 = 820,
-		UNIVERSAL_BEARING_COLLECTIBLE_THE_HIVE = 821,
-		UNIVERSAL_BEARING_COLLECTIBLE_NYCTOPHOBIA = 822,
-		UNIVERSAL_BEARING_COLLECTIBLE_VARIOUS_EXPLOSIVES = 823,
-		UNIVERSAL_BEARING_COLLECTIBLE_INTRODUCTION = 824,
-		HOME_ROOM_1 = 825,
-		HOME_ROOM_2 = 826,
-		HOME_ROOM_3 = 827,
-		HOME_ROOM_4 = 828,
-		HOME_ROOM_5 = 829,
-		HOME_ROOM_6 = 830,
+		GALACTIC_CENTRAL_POINT_BOSS_ARENA = 818,
+		GALACTIC_CENTRAL_POINT_BOSS_ARENA_32 = 819,
+		GALACTIC_CENTRAL_POINT_BOSS_ARENA_49 = 820,
+		GALACTIC_CENTRAL_POINT_BOSS_ARENA_37 = 821,
+		UNIVERSAL_BEARING_COLLECTIBLE_THE_HIVE = 822,
+		UNIVERSAL_BEARING_COLLECTIBLE_NYCTOPHOBIA = 823,
+		UNIVERSAL_BEARING_COLLECTIBLE_VARIOUS_EXPLOSIVES = 824,
+		UNIVERSAL_BEARING_COLLECTIBLE_INTRODUCTION = 825,
+		HOME_ROOM_1 = 826,
+		HOME_ROOM_2 = 827,
+		HOME_ROOM_3 = 828,
+		HOME_ROOM_4 = 829,
+		HOME_ROOM_5 = 830,
+		HOME_ROOM_6 = 831,
 		//Checkpoints
 		INTRODUCTION_CHECKPOINT_1 = 900,
 		THE_CAVES_CHECKPOINT_1 = 901,

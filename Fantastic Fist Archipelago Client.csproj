@@ -202,6 +202,7 @@
 	<PropertyGroup>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -213,6 +214,10 @@
 		<Compile Include="Patcher.cs" />
 		<Compile Include="PathManager.cs" />
 		<Content Include="Directory.Build.props" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Archipelago.MultiClient.Net" Version="6.7.1" />
 	</ItemGroup>
 	
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

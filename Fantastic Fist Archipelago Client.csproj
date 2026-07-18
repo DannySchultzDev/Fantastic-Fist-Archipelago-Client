@@ -203,6 +203,7 @@
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<Version>$(VersionPrefix)</Version>
 	</PropertyGroup>
 
 	<ItemGroup>

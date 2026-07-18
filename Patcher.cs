@@ -1970,9 +1970,39 @@ namespace Fantastic_Fist_Archipelago_Client
 	[HarmonyPatch(typeof(ViviMap), "Update")]
 	public static class ViviMapPatch
 	{
-		public static void Prefix()
+		public static bool Prefix(ViviMap __instance)
 		{
 			CoinLocationsUpdate.UpdateCoinLocations();
+
+			if (Global.Dataholder.GetReboundInputDown(KeyCode.Space) && __instance.IdleAndAtLevel && __instance.CurrentLevel.Map != null && !Global.Dataholder.ReturningToTitle)
+			{
+				Int64 coinsNeededToAccessTheLevel = 0;
+				switch(__instance.CurrentLevel.name)
+				{
+					case "Level7":
+						coinsNeededToAccessTheLevel = (Int64)Core.slotData["boss_coin_req_0"];
+						break;
+					case "Level_16":
+						coinsNeededToAccessTheLevel = (Int64)Core.slotData["boss_coin_req_1"];
+						break;
+					case "Level_27":
+						coinsNeededToAccessTheLevel = (Int64)Core.slotData["boss_coin_req_2"];
+						break;
+					case "Level_38":
+						coinsNeededToAccessTheLevel = (Int64)Core.slotData["boss_coin_req_3"];
+						break;
+					case "Level_43":
+						coinsNeededToAccessTheLevel = (Int64)Core.slotData["boss_coin_req_4"];
+						break;
+				}
+
+				if (ItemManager.worldItems[WorldItem.COIN] < coinsNeededToAccessTheLevel)
+				{
+					Core.instance.messageManager.AddMessageToQueue("Cannot enter boss stage. You have " + ItemManager.worldItems[WorldItem.COIN] + " coins, but need " + coinsNeededToAccessTheLevel + ".");
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 
@@ -2074,6 +2104,7 @@ namespace Fantastic_Fist_Archipelago_Client
 					int.Parse(secret_index_order_split[19].Trim()),
 					int.Parse(secret_index_order_split[24].Trim()),
 					int.Parse(secret_index_order_split[29].Trim()),
+					int.Parse(secret_index_order_split[34].Trim())
 				};
 				int levelToFindIndexOf = -1;
 

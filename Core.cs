@@ -40,7 +40,7 @@ namespace Fantastic_Fist_Archipelago_Client
 
         public MessageManager messageManager = new MessageManager();
 
-        private bool testMode = true;
+        private bool testMode = false;
 
         public static Font fantasticFistFont = null;
         public static Material[] fantasticFistFontMaterials = null;

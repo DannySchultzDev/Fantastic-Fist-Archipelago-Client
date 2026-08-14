@@ -179,7 +179,8 @@ namespace Fantastic_Fist_Archipelago_Client
 				{47, Location.THE_SKY_IS_FALLING_LEVEL_CLEAR },
 				{48, Location.THE_LOOKING_GLASS_LEVEL_CLEAR },
 				{49, Location.THE_LOOKING_GLASS_UNIVERSAL_BEARING_COLLECTIBLE },
-				{51, Location.HOME_LEVEL_CLEAR}
+				{50, Location.GALACTIC_CENTRAL_POINT_LEVEL_CLEAR },
+				{51, Location.HOME_LEVEL_CLEAR }
 			};
 
 		public static bool IsLocationChecked(Location location)

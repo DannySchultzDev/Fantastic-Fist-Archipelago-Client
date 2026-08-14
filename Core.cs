@@ -14,7 +14,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.UI.Selectable;
 
-[assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "1.0.0", "WaluigiGoesWa", null)]
+[assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "0.0.3", "WaluigiGoesWa", null)]
 [assembly: MelonGame("100th Coin", "Fantastic Fist")]
 
 namespace Fantastic_Fist_Archipelago_Client
@@ -280,6 +280,12 @@ namespace Fantastic_Fist_Archipelago_Client
 
 		private bool TryConnection()
 		{
+            if (session != null)
+            {
+                session.Socket.Disconnect();
+                session = null;
+            }
+
             session = ArchipelagoSessionFactory.CreateSession(address);
 
             session.Items.ItemReceived += ItemReceived;
@@ -311,6 +317,7 @@ namespace Fantastic_Fist_Archipelago_Client
             File.WriteAllText(AP_SETUP_FILEPATH, dataToSave);
 
             slotData = ((LoginSuccessful)loginResult).SlotData;
+            GameCache.UpdateEntranceRando();
 
             if (Global.Dataholder.OnTheTitle)
             {

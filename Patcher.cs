@@ -2155,6 +2155,347 @@ namespace Fantastic_Fist_Archipelago_Client
 		}
 	}
 
+	[HarmonyPatch(typeof(LevelSelect), "Start")]
+	public static class LevelSelectPatchStart
+	{
+		//Put each level select object into the cache
+		public static void Prefix(LevelSelect __instance)
+		{
+			if (!GameCache.levelSelectNameToEntranceNameDict.ContainsKey(__instance.name))
+				return;
+
+			string levelId = GameCache.levelSelectNameToEntranceNameDict[__instance.name];
+
+			GameCache.levelSelectDict[levelId] = __instance;
+		}
+	}
+
+	[HarmonyPatch(typeof(LevelSelect), "EnterLevel")]
+	public static class LevelSelectPatchEnterLevel
+	{
+		public static bool Prefix(LevelSelect __instance)
+		{
+			if (!GameCache.levelSelectNameToEntranceNameDict.ContainsKey(__instance.name))
+				return false;
+
+			string levelId = GameCache.levelSelectNameToEntranceNameDict[__instance.name];
+
+			string trueLevelId = GameCache.entranceRandoTrueEntrances[levelId];
+			LevelSelect trueLevel = GameCache.levelSelectDict[trueLevelId];
+
+			Melon<Core>.Logger.Msg("Entering entrance " + levelId + " which has been randomized to " + trueLevelId);
+
+			//Modified level loading procedure.
+
+			if (Global.Dataholder.EnteringLevel < 6f)
+			{
+				return false;
+			}
+
+			Global.Dataholder.EnteringLevel = 0f;
+			Global.Dataholder.OnTheMap = false;
+			Global.Dataholder.InLevelTime = 0f;
+			Global.Dataholder.ClearCoinIDsThisLevel();
+			TwinCameraController component = Global.Dataholder.MainCamera.transform.parent.GetComponent<TwinCameraController>();
+			component.VoidCam2.ResetProjectionMatrix();
+			component.VoidCam2.projectionMatrix *= Matrix4x4.Scale(new Vector3(1f, -1f, 1f));
+			Global.Dataholder.FistHolder.SetActive(value: true);
+			Global.Dataholder.CompletedPageInLevel = false;
+			Global.Dataholder.Vivi.RB.isKinematic = false;
+			Global.Dataholder.SelectLevel = trueLevel;
+			Global.Dataholder.LevelSpawn = trueLevel.LevelSpawn;
+			Global.Dataholder.RepawnWithHoney = trueLevel.StartHoney;
+			Global.Dataholder.Vivi.IsHoneyOnRespawn = trueLevel.StartHoney;
+			Global.Dataholder.Vivi.ExitIceCube = true;
+			Global.Dataholder.Vivi.SR.flipX = false;
+			Global.Dataholder.FistMov.RB.gameObject.SetActive(value: false);
+			Global.Dataholder.FistMov.IsLevelClear = false;
+			Global.Dataholder.FistMov.FinalJustReturn = false;
+			CameraMovement camMov = Global.Dataholder.CamMov;
+			camMov.DestPos = new Vector3((camMov.MapCenters[Mathf.RoundToInt(Global.Dataholder.MapWorld)].transform.position.x + Global.Dataholder.ViviMap.transform.position.x) / 2f, camMov.MapCenters[Mathf.RoundToInt(Global.Dataholder.MapWorld)].transform.position.y, trueLevel.transform.position.z);
+			Vector3 position = camMov.Target.transform.position;
+			camMov.Target.transform.position = new Vector3(0f, 0f, camMov.Target.transform.position.z);
+			Vector3 vector = camMov.Target.transform.position - position;
+			Global.Dataholder.LevelMap.position += vector;
+			Global.Dataholder.LevelSelect = false;
+			trueLevel.Level = trueLevel.GetComponent<NewLevelPath>().level;
+			Global.Dataholder.CurrentLevel = Mathf.RoundToInt(trueLevel.Level);
+			Global.Dataholder.CurrentPlayingLevel = Mathf.RoundToInt(trueLevel.Level);
+			Global.Dataholder.FistMov.transform.position = new Vector3(0f, 0f, -20f);
+			bool flag = false;
+			if (Global.Dataholder.ListOfReEnterLevelRooms[Global.Dataholder.CurrentPlayingLevel] > 0)
+			{
+				flag = true;
+			}
+
+			flag = false;
+			trueLevel.LevelWhoopObject = UnityEngine.Object.Instantiate((!flag) ? trueLevel.LevelWhoop : trueLevel.ReEnterWhoop, new Vector3(__instance.transform.position.x, __instance.transform.position.y, -45f), __instance.transform.rotation);
+			Global.Dataholder.LoadingLevelWhoop = trueLevel.LevelWhoopObject;
+			NewLevelEnter component2 = trueLevel.LevelWhoopObject.GetComponent<NewLevelEnter>();
+			component2.customOffset = new Vector3(0f, -1.5f, 0f);
+			component2.Map = trueLevel.Map;
+			if (Global.Dataholder.CurrentFile == -1f)
+			{
+				component2.Map = trueLevel.ImportedMap;
+				Global.Dataholder.LevEditBG = trueLevel.ImportedBG;
+			}
+
+			if (Global.Dataholder.TheNotebook.CurrentRadio != null)
+			{
+				Global.Dataholder.TheNotebook.CurrentRadio.StopRadio();
+			}
+
+			trueLevel.MusicLoopControl.pitch = 1f;
+			Global.Dataholder.MusicClip = trueLevel.MusicLoopControl;
+			for (int i = 0; i < Global.Dataholder.TheNotebook.Soundtrack.Length; i++)
+			{
+				if (Global.Dataholder.TheNotebook.Soundtrack[i].Clip == trueLevel.MusicLoopControl)
+				{
+					Global.Dataholder.ListOfMusic[i] = true;
+					Global.Dataholder.MEM.SetMusicFound(i);
+					break;
+				}
+			}
+
+			if (Global.Dataholder.CurrentFile == -1f)
+			{
+				component2.Music = trueLevel.ImportedSong;
+			}
+
+			trueLevel.ChosenDelay = trueLevel.IntroDelay;
+			if (Global.Dataholder.CurrentFile == -1f)
+			{
+				trueLevel.ChosenDelay = trueLevel.ImportedDelay;
+			}
+
+			trueLevel.ChosenIntro = trueLevel.LevelIntro;
+			if (Global.Dataholder.CurrentFile == -1f)
+			{
+				trueLevel.ChosenIntro = trueLevel.ImportedIntro;
+			}
+
+			trueLevel.LevelNameObject = UnityEngine.Object.Instantiate(trueLevel.LevelName, new Vector3(0.5f, 20f, -48f), trueLevel.transform.rotation);
+			Global.Dataholder.LoadingLevelName = trueLevel.LevelNameObject;
+			if (trueLevel.StartHoney)
+			{
+				trueLevel.LevelNameObject.GetComponent<IntroFall>().Honeyed = true;
+			}
+
+			Global.Dataholder.LevelIntroHoney = trueLevel.StartHoney;
+			component2.MusicDelay = 5f - trueLevel.MusicLoopControl.IntroDuration;
+			if (!flag)
+			{
+				LevelNameHolder component3 = trueLevel.LevelNameObject.gameObject.GetComponent<LevelNameHolder>();
+				if (!Global.Dataholder.GermanLanguage)
+				{
+					component3.Row1 = trueLevel.NameRow1;
+					component3.Row2 = trueLevel.NameRow2;
+					component3.Row3 = trueLevel.NameRow3;
+					component3.Row4 = trueLevel.NameRow4;
+					component3.Row5 = trueLevel.NameRow5;
+				}
+				else
+				{
+					component3.Row1 = trueLevel.NameRowDE1;
+					component3.Row2 = trueLevel.NameRowDE2;
+					component3.Row3 = trueLevel.NameRowDE3;
+					component3.Row4 = trueLevel.NameRowDE4;
+					component3.Row5 = trueLevel.NameRowDE5;
+				}
+
+				if (Global.Dataholder.CurrentFile == -1f)
+				{
+					component3.Row1 = trueLevel.ImportedRow1;
+					component3.Row2 = trueLevel.ImportedRow2;
+					component3.Row3 = trueLevel.ImportedRow3;
+					component3.Row4 = trueLevel.ImportedRow4;
+					component3.Row5 = trueLevel.ImportedRow5;
+				}
+
+				GameObject gameObject = UnityEngine.Object.Instantiate(trueLevel.IntroFallObject, new Vector3(0f, 20f, -47f), trueLevel.transform.rotation);
+				gameObject.GetComponent<IntroFall>().StartHeight = trueLevel.StartHeight;
+				GameObject loadingLevelParticles = UnityEngine.Object.Instantiate(Global.Dataholder.LevelEnterParticleField, Vector3.zero, trueLevel.transform.rotation);
+				Global.Dataholder.LoadingLevelParticles = loadingLevelParticles;
+				Global.Dataholder.LevelEnterVivi = gameObject.transform;
+				Global.Dataholder.Vivi.Deathh.DiedThisStage = false;
+				if (trueLevel.StartHoney)
+				{
+					gameObject.GetComponent<IntroFall>().Honeyed = true;
+				}
+			}
+
+			return false;
+		}
+	}
+
+	[HarmonyPatch(typeof(LevelInfoTab), "Generate")]
+	public static class LevelInfoTabPatch
+	{
+		public static bool Prefix(LevelInfoTab __instance, int c)
+		{
+			int d = GameCache.levelIdToLevelListIndexDict[GameCache.entranceRandoTrueEntrances[GameCache.levelListIndexToLevelIdDict[c]]];
+
+			//Modified generate code
+
+			__instance.LevelName.text = Global.Dataholder.LevelList[d].Name.Replace("#", " ");
+
+			if (new List<int> {7, 16, 27, 38, 43 }.Contains(c))
+			{
+				Int64 bossCoinReq = -1;
+				switch (c)
+				{
+					case 7:
+						bossCoinReq = (Int64)Core.slotData["boss_coin_req_0"];
+						break;
+					case 16:
+						bossCoinReq = (Int64)Core.slotData["boss_coin_req_1"];
+						break;
+					case 27:
+						bossCoinReq = (Int64)Core.slotData["boss_coin_req_2"];
+						break;
+					case 38:
+						bossCoinReq = (Int64)Core.slotData["boss_coin_req_3"];
+						break;
+					case 43:
+						bossCoinReq = (Int64)Core.slotData["boss_coin_req_4"];
+						break;
+				}
+
+				int coinAmt = ItemManager.worldItems[WorldItem.COIN];
+				if (coinAmt < bossCoinReq)
+				{
+					__instance.LevelName.text += " (" + coinAmt + "/" + bossCoinReq + " Coins)";
+				}
+			}
+			int num = Global.Dataholder.LevelList[d].Exits.Length;
+			int num2 = Global.Dataholder.LevelList[d].Coins.Length;
+			int num3 = Global.Dataholder.LevelList[d].Misc.Length;
+			bool flag = true;
+			int i;
+			for (i = 0; i < __instance.InstExits.Length; i++)
+			{
+				UnityEngine.Object.Destroy(__instance.InstExits[i].gameObject);
+			}
+
+			for (i = 0; i < __instance.InstCoins.Length; i++)
+			{
+				UnityEngine.Object.Destroy(__instance.InstCoins[i].gameObject);
+			}
+
+			for (i = 0; i < __instance.InstPages.Length; i++)
+			{
+				UnityEngine.Object.Destroy(__instance.InstPages[i].gameObject);
+			}
+
+			i = 0;
+			__instance.InstExits = new SpriteRenderer[num];
+			__instance.InstCoins = new SpriteRenderer[num2];
+			__instance.InstPages = new SpriteRenderer[num3];
+			float num4 = 2f;
+
+			for (; i < num; i++)
+			{
+				bool flag2 = false;
+				if (i < Global.Dataholder.LevelList[d].SecretExits.Length)
+				{
+					flag2 = Global.Dataholder.LevelList[d].SecretExits[i];
+				}
+
+				GameObject gameObject = UnityEngine.Object.Instantiate(__instance.ItemPrefab, __instance.ExitHolder.transform.position + new Vector3((float)i * num4, 0f, 0f), __instance.transform.rotation, __instance.ExitHolder.transform);
+				__instance.InstExits[i] = gameObject.GetComponent<SpriteRenderer>();
+
+				if (LocationManager.IsLocationChecked(LocationManager.exitLocationDictionary[Global.Dataholder.LevelList[d].Exits[i]]))
+				{
+					__instance.InstExits[i].sprite = ((!flag2) ? __instance.ExitCheck : __instance.ExitCheck_S);
+					continue;
+				}
+
+				__instance.InstExits[i].sprite = __instance.ExitUncheck;
+				flag = false;
+			}
+
+			for (i = 0; i < num2; i++)
+			{
+				GameObject gameObject2 = UnityEngine.Object.Instantiate(__instance.ItemPrefab, __instance.CoinHolder.transform.position + new Vector3((float)i * num4, 0f, 0f), __instance.transform.rotation, __instance.CoinHolder.transform);
+				__instance.InstCoins[i] = gameObject2.GetComponent<SpriteRenderer>();
+				if (Global.Dataholder.ListOfCollectedCoins[Global.Dataholder.LevelList[d].Coins[i]])
+				{
+					__instance.InstCoins[i].sprite = __instance.CoinCheck;
+					continue;
+				}
+
+				__instance.InstCoins[i].sprite = __instance.CoinUncheck;
+				flag = false;
+			}
+
+			for (i = 0; i < num3; i++)
+			{
+				GameObject gameObject3 = UnityEngine.Object.Instantiate(__instance.ItemPrefab, __instance.PageHolder.transform.position + new Vector3((float)i * num4, 0f, 0f), __instance.transform.rotation, __instance.PageHolder.transform);
+				__instance.InstPages[i] = gameObject3.GetComponent<SpriteRenderer>();
+				if (Global.Dataholder.ListOfPages[Global.Dataholder.LevelList[d].Misc[i]])
+				{
+					__instance.InstPages[i].sprite = __instance.PageCheck;
+					continue;
+				}
+
+				__instance.InstPages[i].sprite = __instance.PageUnCheck;
+				flag = false;
+			}
+
+			i = 0;
+			float num5 = 0f;
+			num5 = (float)__instance.LevelName.text.Length / 3.2f + 2f;
+			if ((float)(num * 2 - 2) > num5)
+			{
+				num5 = num * 2 - 2;
+			}
+
+			if ((float)(num2 * 2 - 2) > num5)
+			{
+				num5 = num2 * 2 - 2;
+			}
+
+			if ((float)(num3 * 2 - 2) > num5)
+			{
+				num5 = num3 * 2 - 2;
+			}
+
+			__instance.Scale = new Vector2(num5, __instance.Scale.y);
+			__instance.Ribbon.enabled = flag;
+			Color color = ((!flag) ? __instance.Default : __instance.Wow);
+			for (i = 0; i < __instance.Tiles.Length; i++)
+			{
+				__instance.Tiles[i].color = color;
+			}
+
+			if (__instance.transform.position.y - Global.Dataholder.MainCamera.transform.position.y > 6f)
+			{
+				__instance.Tiles[9].transform.localPosition = new Vector3(0f, 3f, 0f);
+				__instance.Tiles[9].transform.localEulerAngles = new Vector3(0f, 0f, 180f);
+				__instance.transform.position -= new Vector3(0f, 8f, 0f);
+				__instance.Flip = true;
+			}
+			else
+			{
+				__instance.Tiles[9].transform.localPosition = new Vector3(0f, -3f, 0f);
+				__instance.Tiles[9].transform.localEulerAngles = Vector3.zero;
+				__instance.Flip = false;
+			}
+
+			return false;
+		}
+	}
+
+	[HarmonyPatch(typeof(RoomDoor), "Start")]
+	public static class RoomDoorPatch
+	{
+		public static void Prefix(RoomDoor __instance)
+		{
+			if (Global.Dataholder.CurrentWorld == 7)
+				Global.Dataholder.CurrentWorld = 1;
+		}
+	}
+
 	#endregion Menu
 
 	#region Locations

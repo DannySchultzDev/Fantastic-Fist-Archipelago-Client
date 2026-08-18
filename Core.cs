@@ -14,7 +14,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.UI.Selectable;
 
-[assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "0.0.3", "WaluigiGoesWa", null)]
+[assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "0.0.4", "WaluigiGoesWa", null)]
 [assembly: MelonGame("100th Coin", "Fantastic Fist")]
 
 namespace Fantastic_Fist_Archipelago_Client

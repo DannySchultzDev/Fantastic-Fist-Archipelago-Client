@@ -1956,7 +1956,6 @@ namespace Fantastic_Fist_Archipelago_Client
 
 				if (__instance.PHold.Inside)
 				{
-					__instance.PHold.InsideTransition.transform.position = new Vector3(__instance.PHold.CPath.Dest.transform.position.x, __instance.PHold.CPath.Dest.transform.position.y, __instance.PHold.InsideTransition.transform.position.z);
 					__instance.PHold.TransitionTimer = 0.5f;
 					__instance.PHold.AffectInsideCover = true;
 					__instance.PHold.Inside = false;

@@ -26,7 +26,7 @@ Open the MelonLoader Installer.<br/>
 Select Fantastic Fist.<br/>
 Install MelonLoader **7.1**. (Later versions will throw an error when trying to hook into the game)<br/>
 Extract the files in the Fantastic Fist Archipelago Client zip.<br/>
-Place the files in the zip in C:\Program Files (x86)\Steam\steamapps\common\Fantastic Fist\Mods.
+Place the files in the zip in C:\Program Files (x86)\Steam\steamapps\common\Fantastic Fist\Mods.<br/>
 Run Fantastic Fist, instead of seeing your save files you should see a connection screen. (Archipelago uses a normally unused 4th save file so you don't need to worry about losing your progress)<br/>
 Input your connection information. (use arrow keys to move your selection and Enter to confirm)<br/>
 Enjoy!

@@ -2154,8 +2154,8 @@ namespace Fantastic_Fist_Archipelago_Client
 		}
 	}
 
-	[HarmonyPatch(typeof(LevelSelect), "Start")]
-	public static class LevelSelectPatchStart
+	[HarmonyPatch(typeof(LevelSelect), "Update")]
+	public static class LevelSelectPatchUpdate
 	{
 		//Put each level select object into the cache
 		public static void Prefix(LevelSelect __instance)
@@ -2165,7 +2165,8 @@ namespace Fantastic_Fist_Archipelago_Client
 
 			string levelId = GameCache.levelSelectNameToEntranceNameDict[__instance.name];
 
-			GameCache.levelSelectDict[levelId] = __instance;
+			if (!GameCache.levelSelectDict.ContainsKey(levelId) || GameCache.levelSelectDict[levelId] == null)
+				GameCache.levelSelectDict[levelId] = __instance;
 		}
 	}
 
@@ -2492,6 +2493,30 @@ namespace Fantastic_Fist_Archipelago_Client
 		{
 			if (Global.Dataholder.CurrentWorld == 7)
 				Global.Dataholder.CurrentWorld = 1;
+		}
+	}
+
+	[HarmonyPatch(typeof(Death), "LateUpdate")]
+	public static class DeathPatchLateUpdate
+	{
+		public static void Prefix(Death __instance)
+		{
+			if (DeathlinkManager.storeDeath)
+			{
+				DeathlinkManager.storeDeath = false;
+				--DeathlinkManager.amnestyUsed;
+				__instance.Kill();
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(Death), "Kill")]
+	public static class DeathPatchKill
+	{
+		public static void Prefix(Death __instance)
+		{
+			if (!__instance.justDieded)
+				DeathlinkManager.PlayerDeath();
 		}
 	}
 
@@ -2831,12 +2856,4 @@ namespace Fantastic_Fist_Archipelago_Client
 	}
 
 	#endregion Locations
-	/*[HarmonyPatch(typeof(LevelSelect), "EnterLevel")]
-	public static class LevelSelectPatch
-	{
-		private static void Prefix(LevelSelect __instance)
-		{
-			Melon<Core>.Logger.Msg(__instance.LevelObject.name);
-		}
-	}*/
 }

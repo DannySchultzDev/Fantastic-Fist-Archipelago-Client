@@ -1,4 +1,5 @@
 ﻿using Archipelago.MultiClient.Net;
+using Archipelago.MultiClient.Net.BounceFeatures.DeathLink;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
@@ -14,7 +15,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.UI.Selectable;
 
-[assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "0.0.5", "WaluigiGoesWa", null)]
+[assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "0.0.6", "WaluigiGoesWa", null)]
 [assembly: MelonGame("100th Coin", "Fantastic Fist")]
 
 namespace Fantastic_Fist_Archipelago_Client
@@ -299,7 +300,7 @@ namespace Fantastic_Fist_Archipelago_Client
                 name,
                 Archipelago.MultiClient.Net.Enums.ItemsHandlingFlags.AllItems,
                 new System.Version(0, 6, 7),
-                null,
+				["DeathLink"],
                 null,
                 password,
                 true);
@@ -347,6 +348,17 @@ namespace Fantastic_Fist_Archipelago_Client
 
             PathManager.goalIsHome = (Int64)slotData["goal"] == 2;
             PathManager.openWorldType = (OpenWorldType)(((Int64)slotData["open_world"]));
+
+            //Set up and hook deathlink
+			DeathlinkManager.deathlinkEnabled = (Int64)slotData["deathlink"] != 0;
+			DeathlinkManager.deathlinkAmnesty = (Int64)slotData["deathlink_amnesty"];
+			DeathlinkManager.amnestyUsed = 0;
+
+            if (DeathlinkManager.deathlinkEnabled)
+            {
+                DeathlinkManager.service = session.CreateDeathLinkService();
+                DeathlinkManager.service.OnDeathLinkReceived += DeathlinkManager.DeathlinkReceived;
+            }
 
 			session.Locations.ScoutLocationsAsync(LocationManager.ScoutedMissingLocations, HintCreationPolicy.None, session.Locations.AllMissingLocations.ToArray());
 

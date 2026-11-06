@@ -15,7 +15,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.UI.Selectable;
 
-[assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "0.0.6", "WaluigiGoesWa", null)]
+[assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "0.0.7", "WaluigiGoesWa", null)]
 [assembly: MelonGame("100th Coin", "Fantastic Fist")]
 
 namespace Fantastic_Fist_Archipelago_Client
@@ -145,7 +145,23 @@ namespace Fantastic_Fist_Archipelago_Client
             {
                 //Test action.
 
-                //messageManager.ClearQueue();
+                /*
+                foreach (string key in GameCache.doorMapping.Keys)
+                {
+                    foreach (string value in GameCache.doorMapping[key])
+                    {
+						LoggerInstance.Msg(key + " to " + value);
+					}
+				}
+                */
+
+                LoggerInstance.Msg("TVal 1: " + Global.Dataholder.Vivi.Cutscene);
+				LoggerInstance.Msg("TVal 2: " + Global.Dataholder.CantPause);
+				LoggerInstance.Msg("TVal 3: " + Global.Dataholder.Vivi.Deathh.TempInvuln);
+				LoggerInstance.Msg("TVal 4: " + Global.Dataholder.Vivi.EnteringDoor);
+				LoggerInstance.Msg("TVal 5: " + Global.Dataholder.Vivi.isMove);
+				LoggerInstance.Msg("TVal 6: " + Global.Dataholder.InsideOpeningCutscene);
+				LoggerInstance.Msg("TVal 7: " + Global.Dataholder.WatchingCutscene);
 
 				LoggerInstance.Msg("Test action completed successfully");
 			}
@@ -319,6 +335,7 @@ namespace Fantastic_Fist_Archipelago_Client
 
             slotData = ((LoginSuccessful)loginResult).SlotData;
             GameCache.UpdateEntranceRando();
+            GameCache.UpdateDoorRando();
 
             if (Global.Dataholder.OnTheTitle)
             {
@@ -710,7 +727,6 @@ namespace Fantastic_Fist_Archipelago_Client
 
             gameObjectToMove.transform.position = targetPos;
 		}
-
 
 		public static string CropString(string uncroppedString)
         {

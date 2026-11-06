@@ -8,6 +8,7 @@ using System.Text;
 using HarmonyLib;
 using JetBrains.Annotations;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -2154,6 +2155,20 @@ namespace Fantastic_Fist_Archipelago_Client
 		}
 	}
 
+	[HarmonyPatch(typeof(LevelSelect), "Start")]
+	public static class LevelSelectPatchStart
+	{
+		public static void Prefix(LevelSelect __instance)
+		{
+			GameObject levelMap = __instance.Map;
+			
+			if (levelMap == null)
+				return;
+
+			GameCache.levelMapCache[levelMap.name] = levelMap.GetComponent<RoomChange>();
+		}
+	}
+
 	[HarmonyPatch(typeof(LevelSelect), "Update")]
 	public static class LevelSelectPatchUpdate
 	{
@@ -2328,6 +2343,32 @@ namespace Fantastic_Fist_Archipelago_Client
 		}
 	}
 
+	[HarmonyPatch(typeof(LevelSelect), "ReturnToMap")]
+	public static class LevelSelectPatchReturnToMapFix
+	{
+		public static void Prefix(LevelSelect __instance)
+		{
+			//Current world can fall out of bounds causing an exception
+			while (Global.Dataholder.CurrentWorld >= Global.Dataholder.MapMusicByWorld.Length)
+			{
+				--Global.Dataholder.CurrentWorld;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(SecretExitTinyDoor), "Update")]
+	public static class SecretExitTinyDoorPatchReturnToMapFix
+	{
+		public static void Prefix(SecretExitTinyDoor __instance)
+		{
+			while (Mathf.RoundToInt(Mathf.Max(Global.Dataholder.CurrentWorld - 1f, 0f)) >= __instance.Out1s.Length ||
+				Mathf.RoundToInt(Mathf.Max(Global.Dataholder.CurrentWorld - 1f, 0f)) >= __instance.Out2s.Length)
+			{
+				--Global.Dataholder.CurrentWorld;
+			}
+		}
+	}
+
 	[HarmonyPatch(typeof(LevelInfoTab), "Generate")]
 	public static class LevelInfoTabPatch
 	{
@@ -2496,6 +2537,275 @@ namespace Fantastic_Fist_Archipelago_Client
 		}
 	}
 
+	[HarmonyPatch(typeof(RoomDoor), "NextRoom")]
+	public static class RoomDoorPatchNextRoom
+	{
+		public static void Prefix(RoomDoor __instance)
+		{
+			var nextRoom = NextRoomIdentifier.UpdateToNextRoom(
+				!__instance.W3BAlt ? __instance.room : __instance.roomAltW3Boss, 
+				new Vector2(__instance.SpawnOffX, __instance.SpawnOffY));
+			
+			if (nextRoom.success)
+			{
+				__instance.room = nextRoom.nextRoomID;
+				__instance.W3BAlt = false;
+				__instance.SpawnOffX = nextRoom.nextSpawnPos.x;
+				__instance.SpawnOffY = nextRoom.nextSpawnPos.y;
+				__instance.GolfCutsceneDoor = false;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(GolfScorecardButton), "OnMouseDrag")]
+	public static class GolfScoreCardButtonPatch
+	{
+		public static bool Prefix(GolfScorecardButton __instance)
+		{
+			if (Global.Dataholder.GetReboundInput(KeyCode.Mouse0) && !__instance.doOnce)
+			{
+				__instance.doOnce = true;
+				//UnityEngine.Object.Instantiate(__instance.Flash, new Vector3(__instance.transform.position.x, __instance.transform.position.y, -6f), __instance.transform.rotation, Global.Dataholder.MainCamera.transform);
+
+				Global.Dataholder.W3LoopX = false;
+				Global.Dataholder.FistHolder.SetActive(value: true);
+
+				var nextRoom = NextRoomIdentifier.UpdateToNextRoom(
+					Global.Dataholder.Room + 1,
+					new Vector2(0, 0));
+
+				Global.Dataholder.Room = nextRoom.nextRoomID;
+				Global.Dataholder.Vivi.transform.position = new Vector2(nextRoom.nextSpawnPos.x, nextRoom.nextSpawnPos.y - 1.5f);
+				Global.Dataholder.Vivi.Deathh.RespawnPoint = new Vector2(nextRoom.nextSpawnPos.x, nextRoom.nextSpawnPos.y);
+
+				Global.Dataholder.IsCurrentlyInALevel = true;
+				Global.Dataholder.GolfNoMoving = false;
+				Global.Dataholder.CurrentGolfStrokes = 0;
+				GameObject MapClone = ((!Global.Dataholder.IsPlayTestLevelEditor) ? Global.Dataholder.Game.gameObject : Global.Dataholder.MapClone.gameObject);
+				UnityEngine.Object.Destroy(Global.Dataholder.levelObject);
+				UnityEngine.Object.Destroy(Global.Dataholder.levelSolidsObject);
+				Global.Dataholder.ScreenLimiter = false;
+				GameObject Player = Global.Dataholder.Vivi.gameObject;
+				Player.transform.position = Vector3.zero;
+				Global.Dataholder.FistHolder.transform.position = new Vector3(0f, 0f, Global.Dataholder.FistHolder.transform.position.z);
+				if (Global.Dataholder.IsPlayTestLevelEditor)
+				{
+					Player.GetComponent<Death>().ResetLevel = GameObject.Find("Map(Clone)").gameObject.GetComponent<RoomChange>().Rooms[Global.Dataholder.Room].gameObject;
+				}
+				else
+				{
+					GameObject.Find("Player").gameObject.GetComponent<Death>().ResetLevel = Global.Dataholder.MapClone.Rooms[Global.Dataholder.Room];
+				}
+
+				Player.GetComponent<Death>().GhostCount = 0f;
+				Player.GetComponent<Death>().GhostName = 0f;
+				Global.Dataholder.ClearTheGhostMap.gameObject.GetComponent<ClearGhostMap>().KillTheGhosts();
+				if (Global.Dataholder.IsPlayTestLevelEditor)
+				{
+					GameObject gameObject = UnityEngine.Object.Instantiate(Global.Dataholder.MapClone.Rooms[Global.Dataholder.Room].gameObject, new Vector3(0f, 0f, 10f), __instance.transform.rotation, MapClone.transform);
+					gameObject.name = "ActiveRoom";
+					gameObject.SetActive(value: true);
+					Global.Dataholder.levelObject = gameObject;
+					Global.Dataholder.Vivi.Deathh.LevelObject = gameObject;
+					GameObject gameObject2 = UnityEngine.Object.Instantiate(Global.Dataholder.MapClone.gameObject.GetComponent<RoomChange>().RoomSolids[Global.Dataholder.Room].gameObject, new Vector3(0f, 0f, 10f), __instance.transform.rotation, MapClone.transform);
+					gameObject2.name = "ActiveRoomSolids";
+					gameObject2.SetActive(value: true);
+					Global.Dataholder.levelSolidsObject = gameObject2;
+				}
+				else
+				{
+					GameObject gameObject3 = null;
+					GameObject gameObject4;
+					if (Global.Dataholder.CurrentFile == -1f)
+					{
+						gameObject4 = UnityEngine.Object.Instantiate(GameObject.Find("Player").gameObject.GetComponent<Death>().ResetLevel = Global.Dataholder.SelectLevel.ImportedMap.gameObject.GetComponent<RoomChange>().Rooms[Global.Dataholder.Room], new Vector3(0f, 0f, 10f), __instance.transform.rotation, MapClone.transform);
+					}
+					else
+					{
+						gameObject4 = UnityEngine.Object.Instantiate(Global.Dataholder.MapClone.Rooms[Global.Dataholder.Room], new Vector3(0f, 0f, 10f), __instance.transform.rotation, MapClone.transform);
+						if (Global.Dataholder.MapClone.RoomSolids.Length > 0)
+						{
+							gameObject3 = UnityEngine.Object.Instantiate(Global.Dataholder.MapClone.RoomSolids[Global.Dataholder.Room], new Vector3(0f, 0f, 10f), __instance.transform.rotation, MapClone.transform);
+						}
+					}
+
+					gameObject4.name = "ActiveRoom";
+					gameObject4.SetActive(value: true);
+					Global.Dataholder.levelObject = gameObject4;
+					Global.Dataholder.Vivi.Deathh.LevelObject = gameObject4;
+					Player.GetComponent<Vivi_movement>().cantgoleft = false;
+					Player.GetComponent<Vivi_movement>().cantgoright = false;
+					if (gameObject3 != null)
+					{
+						gameObject3.name = "ActiveRoomSolids";
+						gameObject3.SetActive(value: true);
+						Global.Dataholder.levelSolidsObject = gameObject3;
+						gameObject3.transform.parent = Global.Dataholder.PauseFunction.transform;
+					}
+				}
+
+				Player.GetComponent<Death>().TempInvuln = false;
+			}
+			return false;
+		}
+	}
+
+	//Next room is identified in helper method since doors and golf need to use it.
+	public static class NextRoomIdentifier
+	{
+		public static (bool success, int nextRoomID, Vector2 nextSpawnPos) UpdateToNextRoom(int room, Vector2 spawnPos)
+		{
+			(string, int) doorId = (Global.Dataholder.MapClone.name, room);
+
+			//For some reason when W3 boss door is opened in a non W3 boss level, the door's room is 13, which is not only incorrect, but out of range.
+			if (doorId.Item1.Equals("Build_88_3-Boss") && Global.Dataholder.Room == 12)
+				doorId.Item2 = 10;
+
+			Melon<Core>.Logger.Msg("Entering door " + doorId.Item1 + " | " + doorId.Item2);
+			Melon<Core>.Logger.Msg("Door has spawn position: " + spawnPos.x + " | " + spawnPos.y);
+			Melon<Core>.Logger.Msg("Current freeCam: " + Global.Dataholder.Vivi.isCameraFree.ToString());
+
+			if ((Global.Dataholder.MapClone.name.Equals("Build_84_1-6 Bumpers") && Global.Dataholder.Room == 5) ||
+				(Global.Dataholder.MapClone.name.Equals("Build_90_4-7 Spire") && Global.Dataholder.Room == 8))
+			{
+				Melon<Core>.Logger.Msg("This is a side room, do not randomize the return");
+				return (false, -1, Vector2.zero);
+			}
+
+			if (GameCache.doorIdToSlotData.ContainsKey(doorId))
+			{
+				string slotDataDoor = GameCache.doorIdToSlotData[doorId];
+				Melon<Core>.Logger.Msg("Slot data door: " + slotDataDoor);
+
+				if (slotDataDoor.Equals("The Throne Room Room 4"))
+				{
+					slotDataDoor = Global.Dataholder.Room == 4 ?
+						"The Throne Room Room 4A" :
+						"The Throne Room Room 4B";
+				} else if (slotDataDoor.Equals("The Throne Room Room 6"))
+				{
+					slotDataDoor = Global.Dataholder.Room == 7 ?
+						"The Throne Room Room 6A" :
+						"The Throne Room Room 6B";
+				}
+
+				if (GameCache.doorMapping.ContainsKey(slotDataDoor))
+				{
+					string exit = null;
+					List<string> possibleExits = GameCache.doorMapping[slotDataDoor];
+					if (possibleExits.Count > 1)
+					{
+						switch (doorId.Item1)
+						{
+							case "Build_84_1-L":
+								exit = possibleExits[doorId.Item2 - 2];
+								break;
+							case "Build_84_1-6 Bumpers":
+								//We don't know the order of possible exits (depends on the order loaded),
+								//but we know which door should go to the side room, and what the name of the side room is.
+								if (doorId.Item2 == 5)
+									exit = "Verticality Room 2B";
+								else if (possibleExits[0].Equals("Verticality Room 2B"))
+									exit = possibleExits[1];
+								else
+									exit = possibleExits[0];
+								break;
+							case "Build_90_4-7 Spire":
+								if (doorId.Item2 == 8)
+									exit = "The Five Mile Spire Room 7B";
+								else if (possibleExits[0].Equals("The Five Mile Spire Room 7B"))
+									exit = possibleExits[1];
+								else
+									exit = possibleExits[0];
+								break;
+							case "Build_88_3-Boss":
+								exit = (doorId.Item2 == 4 || doorId.Item2 == 7) ? possibleExits[0] : possibleExits[1];
+								break;
+							case "Build_91_5-3":
+								if (doorId.Item2 != 1)
+									exit = null;
+								else if (possibleExits[0].Equals("Universal Bearing Collectible The Hive"))
+									exit = possibleExits[1];
+								else
+									exit = possibleExits[0];
+								break;
+						}
+					}
+					else
+					{
+						exit = possibleExits[0];
+					}
+
+					if (exit != null)
+					{
+						Melon<Core>.Logger.Msg("exit door: " + exit);
+
+						if (GameCache.slotDataToDoorId.ContainsKey(exit))
+						{
+							var exitDoorId = GameCache.slotDataToDoorId[exit];
+
+							Melon<Core>.Logger.Msg("Entering door " + doorId.Item1 + " | " + doorId.Item2 +
+								" which has been randomized to " + exitDoorId.levelId + " | " + exitDoorId.roomId);
+
+							Melon<Core>.Logger.Msg("Exit level has " + GameCache.levelMapCache[exitDoorId.levelId].Rooms.Length + " rooms");
+
+							Global.Dataholder.MapClone = GameCache.levelMapCache[exitDoorId.levelId];
+
+							Global.Dataholder.Vivi.isCameraFree = exitDoorId.freeCam;
+
+							if (exitDoorId.levelId.Equals("Build_90_4-Boss") && exitDoorId.roomId > 0 && exitDoorId.roomId < 10)
+							{
+								Global.Dataholder.Vivi.GolfCarting = true;
+							}
+							else
+							{
+								Global.Dataholder.Vivi.GolfCarting = false;
+								Global.Dataholder.Vivi.ExitGolfMode = true;
+							}
+
+							if (exitDoorId.startHoney == 0)
+							{
+								Global.Dataholder.Vivi.isupsidedown = false;
+								Global.Dataholder.Vivi.IsHoneyOnRespawn = false;
+								Global.Dataholder.RepawnWithHoney = false;
+							}
+							else if (exitDoorId.startHoney == 1)
+							{
+								Global.Dataholder.Vivi.isupsidedown = true;
+								Global.Dataholder.Vivi.IsHoneyOnRespawn = true;
+								Global.Dataholder.RepawnWithHoney = true;
+							}
+
+							return (
+								true,
+								exitDoorId.roomId,
+								exitDoorId.spawnPos);
+						}
+						else
+						{
+							Melon<Core>.Logger.Msg("slotDataToDoorId does not contain " + exit);
+						}
+					}
+					else
+					{
+						Melon<Core>.Logger.Msg("No exit selected for " + slotDataDoor);
+					}
+				}
+				else
+				{
+					Melon<Core>.Logger.Msg("doorMapping does not contain " + slotDataDoor);
+				}
+			}
+			else
+			{
+				Melon<Core>.Logger.Msg("doorIdToSlotData does not contain " + doorId.Item1 + " | " + doorId.Item2);
+				Melon<Core>.Logger.Msg("Door has not been randomized.");
+			}
+
+			return (false, -1, Vector2.zero);
+		}
+	}
+
 	[HarmonyPatch(typeof(Death), "LateUpdate")]
 	public static class DeathPatchLateUpdate
 	{
@@ -2650,15 +2960,32 @@ namespace Fantastic_Fist_Archipelago_Client
 			}
 			else
 			{
-				Melon<Core>.Logger.Msg("Exit found: " + __instance.Exit_ID);
+				Melon<Core>.Logger.Msg("Exit found: " + Global.Dataholder.MapClone.name + " " + Global.Dataholder.Room);
 
-				if (LocationManager.exitLocationDictionary.ContainsKey(__instance.Exit_ID))
-					LocationManager.MarkLocationAsChecked(LocationManager.exitLocationDictionary[__instance.Exit_ID]);
+				if (LocationManager.levelRoomIdToExitLocationDit.ContainsKey((Global.Dataholder.MapClone.name, Global.Dataholder.Room)))
+					LocationManager.MarkLocationAsChecked(LocationManager.levelRoomIdToExitLocationDit[(Global.Dataholder.MapClone.name, Global.Dataholder.Room)]);
 
-				if (__instance.Exit_ID == 49 && (Int64)Core.slotData["goal"] == 1)
+				if (Global.Dataholder.MapClone.name.Equals("Build_91_5-3") &&
+					Global.Dataholder.Room == 14 &&
+					(Int64)Core.slotData["goal"] == 1)
 					LocationManager.SetGoal();
-				else if (__instance.Exit_ID == 51 && (Int64)Core.slotData["goal"] == 2)
+				else if (Global.Dataholder.MapClone.name.Equals("Build_121_Home") &&
+					Global.Dataholder.Room == 6 &&
+					(Int64)Core.slotData["goal"] == 2)
 					LocationManager.SetGoal();
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(ShockwaveTransition), "Update")]
+	public static class ShockwaveDoorRandoFixPatch
+	{
+		public static void Prefix(ShockwaveTransition __instance)
+		{
+			while (__instance.WorldNum >= __instance.Rate.Length ||
+				__instance.WorldNum >= __instance.Starts.Length)
+			{
+				--__instance.WorldNum;
 			}
 		}
 	}

@@ -183,6 +183,63 @@ namespace Fantastic_Fist_Archipelago_Client
 				{51, Location.HOME_LEVEL_CLEAR }
 			};
 
+		public static readonly Dictionary<(string levelId, int roomId), Location> levelRoomIdToExitLocationDit =
+			new Dictionary<(string levelId, int roomId), Location>()
+			{
+				{("Build_84_1-1", 2), Location.INTRODUCTION_LEVEL_CLEAR },
+				{("Build_84_1-7 Caves", 3), Location.THE_CAVES_LEVEL_CLEAR },
+				{("Build_84_1-7 Caves", 4), Location.THE_CAVES_LOAD_BEARING_COLLECTIBLE },
+				{("Build_84_1-2 Get A Grip", 2), Location.GET_A_GRIP_LEVEL_CLEAR },
+				{("Build_84_1-6 Bumpers", 3), Location.VERTICALITY_LEVEL_CLEAR },
+				{("Build_84_1-6 Bumpers", 4), Location.VERTICALITY_LOAD_BEARING_COLLECTIBLE },
+				{("Build_84_1-3 Catch A Ride", 2), Location.CATCH_A_RIDE_LEVEL_CLEAR },
+				{("Build_84_1-10 TheMines", 2), Location.CHAOS_CAVERN_LEVEL_CLEAR },
+				{("Build_84_1-9 ChaosCavern", 3), Location.HOLDING_ON_LEVEL_CLEAR},
+				{("Build_84_1-Boss", 5), Location.FIST_FIGHT_LEVEL_CLEAR },
+				{("Build_84_1-4 Depths", 2), Location.DEPTHS_LEVEL_CLEAR },
+				{("Build_84_1-5 Cliff Warning", 1), Location.CLIFF_WARNING_LEVEL_CLEAR },
+				{("Build_84_1-L", 0), Location.THE_LIBRARY_LEVEL_CLEAR },
+				{("Build_86_2-1_MidnightGrove", 3), Location.MIDNIGHT_GROVE_LEVEL_CLEAR },
+				{("Build_86_2-1_MidnightGrove", 4), Location.MIDNIGHT_GROVE_LOAD_BEARING_COLLECTIBLE },
+				{("Build_86_2-2_Briar", 3), Location.BRIARBRUSH_WOODS_LEVEL_CLEAR },
+				{("Build_86_2-3_Explosives", 2), Location.VARIOUS_EXPLOSIVES_LEVEL_CLEAR },
+				{("Build_86_2-5_TogetherTether", 3), Location.TOGETHER_BY_TETHER_LEVEL_CLEAR },
+				{("Build_86_2-4_KeyBubbles", 2), Location.POP_UNLOCK_LEVEL_CLEAR },
+				{("Build_86_2-B_Gatekeeper", 5), Location.THE_GATEKEEPER_LEVEL_CLEAR },
+				{("Build_86_2-7_Elavator", 2), Location.THE_ELEVATOR_LEVEL_CLEAR },
+				{("Build_86_2-6_Frostbite", 3), Location.FROSTBITE_LEVEL_CLEAR },
+				{("Build_86_2-8_Niche", 4), Location.FORGOTTEN_ARCHIVES_LEVEL_CLEAR },
+				{("Build_86_2-8_Niche", 5), Location.FORGOTTEN_ARCHIVES_LOAD_BEARING_COLLECTIBLE },
+				{("Build_86_2-Scenic", 6), Location.THE_SCENIC_ROUTE_LEVEL_CLEAR },
+				{("Build_88_3A-1", 2), Location.THE_TIMELESS_TEMPLE_LEVEL_CLEAR },
+				{("Build_88_3A-1", 3), Location.THE_TIMELESS_TEMPLE_LOAD_BEARING_COLLECTIBLE },
+				{("Build_88_3A-2", 3), Location.HAUNTED_HALLS_LEVEL_CLEAR },
+				{("Build_88_3B-1", 3), Location.BORROWED_TIME_LEVEL_CLEAR },
+				{("Build_88_3B-2_Nyctophobia", 4), Location.NYCTOPHOBIA_LEVEL_CLEAR },
+				{("Build_88_3B-3", 3), Location.SHIFTING_WALLS_LEVEL_CLEAR },
+				{("Build_88_3A-3", 3), Location.SKULLDUGGERY_LEVEL_CLEAR },
+				{("Build_88_3-Boss", 11), Location.THE_THRONE_ROOM_LEVEL_CLEAR },
+				{("Build_88_3B-4 Pop", 2), Location.POP_TO_THE_TOP_LEVEL_CLEAR },
+				{("Build_88_3B-5 Dungeon", 3), Location.PERIODIC_PRISON_LEVEL_CLEAR },
+				{("Build_89_4-1", 2), Location.INFINITY_GARDEN_LEVEL_CLEAR },
+				{("Build_89_4-1", 3), Location.INFINITY_GARDEN_LOAD_BEARING_COLLECTIBLE },
+				{("Build_90_4-2", 3), Location.AUTUMNAL_AETHER_LEVEL_CLEAR },
+				{("Build_90_4-3", 3), Location.AMONG_THE_STARS_LEVEL_CLEAR },
+				{("Build_90_4-4", 3), Location.DEN_OF_PIXIES_LEVEL_CLEAR },
+				{("Build_90_4-5", 3), Location.HEELS_OVER_HEAD_LEVEL_CLEAR },
+				{("Build_90_4-6 Hive", 6), Location.THE_HIVE_LEVEL_CLEAR },
+				{("Build_90_4-7 Spire", 7), Location.THE_FIVE_MILE_SPIRE_LEVEL_CLEAR },
+				{("Build_90_4-8 GubeGardens", 4), Location.GUBE_GARDENS_LEVEL_CLEAR },
+				{("Build_90_4-Boss", 11), Location.THE_GOLF_FUNGUS_LEVEL_CLEAR },
+				{("Build_90_4-Alt", 2), Location.OVER_THE_WOODS_LEVEL_CLEAR },
+				{("Build_91_5-1", 4), Location.WELCOME_TO_THE_VOID_LEVEL_CLEAR },
+				{("Build_91_5-2", 4), Location.THE_SKY_IS_FALLING_LEVEL_CLEAR },
+				{("Build_91_5-3", 4), Location.THE_LOOKING_GLASS_LEVEL_CLEAR },
+				{("Build_91_5-3", 14), Location.THE_LOOKING_GLASS_UNIVERSAL_BEARING_COLLECTIBLE },
+				{("FinalBoss", 1), Location.GALACTIC_CENTRAL_POINT_LEVEL_CLEAR },
+				{("Build_121_Home", 5), Location.HOME_LEVEL_CLEAR }
+			};
+
 		public static bool IsLocationChecked(Location location)
 		{
 			return locationsChecked[location];

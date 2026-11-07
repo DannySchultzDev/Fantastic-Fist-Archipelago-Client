@@ -1,13 +1,6 @@
-﻿using Harmony;
-using MelonLoader.ICSharpCode.SharpZipLib.GZip;
-using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Fantastic_Fist_Archipelago_Client
 {

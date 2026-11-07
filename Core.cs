@@ -5,17 +5,14 @@ using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
 using MelonLoader;
 using Microsoft.Win32;
-using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using UnityEngine.UI;
-using static UnityEngine.UI.Selectable;
 
-[assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "0.0.7", "WaluigiGoesWa", null)]
+[assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "1.0.0", "WaluigiGoesWa", null)]
 [assembly: MelonGame("100th Coin", "Fantastic Fist")]
 
 namespace Fantastic_Fist_Archipelago_Client
@@ -64,6 +61,8 @@ namespace Fantastic_Fist_Archipelago_Client
         private float timeBeforeRetry = -1;
 
         public static bool viviMapInitialMove = false;
+
+        public static (string levelId, int roomId) currRoom = (string.Empty, -1);
 
 		public override void OnInitializeMelon()
         {
@@ -137,6 +136,24 @@ namespace Fantastic_Fist_Archipelago_Client
                     }
                 }
             }
+
+            if (Global.Dataholder.MapClone != null && 
+                !Global.Dataholder.OnTheMap &&
+                !(Global.Dataholder.MapClone.name, Global.Dataholder.Room).Equals(currRoom))
+            {
+                currRoom = (Global.Dataholder.MapClone.name, Global.Dataholder.Room);
+                LoggerInstance.Msg("Entered room: " + currRoom.levelId + " " + currRoom.roomId);
+
+                if (LocationManager.roomsanity && LocationManager.roomsanityDict.ContainsKey(currRoom))
+                {
+                    LocationManager.MarkLocationAsChecked(LocationManager.roomsanityDict[currRoom]);
+                }
+            }
+
+            if (LocationManager.checkpointsanity && Global.Dataholder.Finale49Checkpoint)
+            {
+                LocationManager.MarkLocationAsChecked(Fantastic_Fist_Archipelago_Client.Location.GALACTIC_CENTRAL_POINT_CHECKPOINT_1);
+            }
 		}
 
 		public override void OnUpdate()
@@ -145,25 +162,7 @@ namespace Fantastic_Fist_Archipelago_Client
             {
                 //Test action.
 
-                /*
-                foreach (string key in GameCache.doorMapping.Keys)
-                {
-                    foreach (string value in GameCache.doorMapping[key])
-                    {
-						LoggerInstance.Msg(key + " to " + value);
-					}
-				}
-                */
-
-                LoggerInstance.Msg("TVal 1: " + Global.Dataholder.Vivi.Cutscene);
-				LoggerInstance.Msg("TVal 2: " + Global.Dataholder.CantPause);
-				LoggerInstance.Msg("TVal 3: " + Global.Dataholder.Vivi.Deathh.TempInvuln);
-				LoggerInstance.Msg("TVal 4: " + Global.Dataholder.Vivi.EnteringDoor);
-				LoggerInstance.Msg("TVal 5: " + Global.Dataholder.Vivi.isMove);
-				LoggerInstance.Msg("TVal 6: " + Global.Dataholder.InsideOpeningCutscene);
-				LoggerInstance.Msg("TVal 7: " + Global.Dataholder.WatchingCutscene);
-
-				LoggerInstance.Msg("Test action completed successfully");
+				//LoggerInstance.Msg("Test action completed successfully");
 			}
 
 			if (apSetupPanel != null)
@@ -297,7 +296,9 @@ namespace Fantastic_Fist_Archipelago_Client
 
 		private bool TryConnection()
 		{
-            if (session != null)
+            currRoom = (string.Empty, -1);
+
+			if (session != null)
             {
                 session.Socket.Disconnect();
                 session = null;
@@ -360,8 +361,8 @@ namespace Fantastic_Fist_Archipelago_Client
             timeBeforeRetry = -1;
 
             LocationManager.PrecheckedLocations(session.Locations.AllLocationsChecked.ToArray());
-            //LocationManager.roomsanity = (bool)slotData["roomsanity"];
-            //LocationManager.checkpointsanity = (bool)slotData["checkpointsanity"];
+            LocationManager.roomsanity = (Int64)slotData["roomsanity"] != 0;
+            LocationManager.checkpointsanity = (Int64)slotData["checkpointsanity"] != 0;
 
             PathManager.goalIsHome = (Int64)slotData["goal"] == 2;
             PathManager.openWorldType = (OpenWorldType)(((Int64)slotData["open_world"]));

@@ -2,8 +2,6 @@
 using MelonLoader;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Fantastic_Fist_Archipelago_Client
 {

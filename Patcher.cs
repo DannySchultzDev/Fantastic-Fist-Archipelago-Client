@@ -1,19 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using HarmonyLib;
-using JetBrains.Annotations;
 using MelonLoader;
-using Steamworks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using static System.TimeZoneInfo;
-using static MelonLoader.MelonLogger;
 
 namespace Fantastic_Fist_Archipelago_Client
 {
@@ -2661,9 +2651,9 @@ namespace Fantastic_Fist_Archipelago_Client
 			if (doorId.Item1.Equals("Build_88_3-Boss") && Global.Dataholder.Room == 12)
 				doorId.Item2 = 10;
 
-			Melon<Core>.Logger.Msg("Entering door " + doorId.Item1 + " | " + doorId.Item2);
-			Melon<Core>.Logger.Msg("Door has spawn position: " + spawnPos.x + " | " + spawnPos.y);
-			Melon<Core>.Logger.Msg("Current freeCam: " + Global.Dataholder.Vivi.isCameraFree.ToString());
+			//Melon<Core>.Logger.Msg("Entering door " + doorId.Item1 + " | " + doorId.Item2);
+			//Melon<Core>.Logger.Msg("Door has spawn position: " + spawnPos.x + " | " + spawnPos.y);
+			//Melon<Core>.Logger.Msg("Current freeCam: " + Global.Dataholder.Vivi.isCameraFree.ToString());
 
 			if ((Global.Dataholder.MapClone.name.Equals("Build_84_1-6 Bumpers") && Global.Dataholder.Room == 5) ||
 				(Global.Dataholder.MapClone.name.Equals("Build_90_4-7 Spire") && Global.Dataholder.Room == 8))
@@ -2675,7 +2665,7 @@ namespace Fantastic_Fist_Archipelago_Client
 			if (GameCache.doorIdToSlotData.ContainsKey(doorId))
 			{
 				string slotDataDoor = GameCache.doorIdToSlotData[doorId];
-				Melon<Core>.Logger.Msg("Slot data door: " + slotDataDoor);
+				//Melon<Core>.Logger.Msg("Slot data door: " + slotDataDoor);
 
 				if (slotDataDoor.Equals("The Throne Room Room 4"))
 				{
@@ -2738,16 +2728,15 @@ namespace Fantastic_Fist_Archipelago_Client
 
 					if (exit != null)
 					{
-						Melon<Core>.Logger.Msg("exit door: " + exit);
+						//Melon<Core>.Logger.Msg("exit door: " + exit);
 
 						if (GameCache.slotDataToDoorId.ContainsKey(exit))
 						{
 							var exitDoorId = GameCache.slotDataToDoorId[exit];
 
-							Melon<Core>.Logger.Msg("Entering door " + doorId.Item1 + " | " + doorId.Item2 +
-								" which has been randomized to " + exitDoorId.levelId + " | " + exitDoorId.roomId);
+							Melon<Core>.Logger.Msg("Entering door in " + slotDataDoor + " which has been randomized to " + exit);
 
-							Melon<Core>.Logger.Msg("Exit level has " + GameCache.levelMapCache[exitDoorId.levelId].Rooms.Length + " rooms");
+							//Melon<Core>.Logger.Msg("Exit level has " + GameCache.levelMapCache[exitDoorId.levelId].Rooms.Length + " rooms");
 
 							Global.Dataholder.MapClone = GameCache.levelMapCache[exitDoorId.levelId];
 
@@ -2783,22 +2772,22 @@ namespace Fantastic_Fist_Archipelago_Client
 						}
 						else
 						{
-							Melon<Core>.Logger.Msg("slotDataToDoorId does not contain " + exit);
+							//Melon<Core>.Logger.Msg("slotDataToDoorId does not contain " + exit);
 						}
 					}
 					else
 					{
-						Melon<Core>.Logger.Msg("No exit selected for " + slotDataDoor);
+						//Melon<Core>.Logger.Msg("No exit selected for " + slotDataDoor);
 					}
 				}
 				else
 				{
-					Melon<Core>.Logger.Msg("doorMapping does not contain " + slotDataDoor);
+					//Melon<Core>.Logger.Msg("doorMapping does not contain " + slotDataDoor);
 				}
 			}
 			else
 			{
-				Melon<Core>.Logger.Msg("doorIdToSlotData does not contain " + doorId.Item1 + " | " + doorId.Item2);
+				//Melon<Core>.Logger.Msg("doorIdToSlotData does not contain " + doorId.Item1 + " | " + doorId.Item2);
 				Melon<Core>.Logger.Msg("Door has not been randomized.");
 			}
 
@@ -3046,6 +3035,30 @@ namespace Fantastic_Fist_Archipelago_Client
 		}
 	}
 
+	[HarmonyPatch(typeof(MidwayCheckpoint), "OnTriggerEnter")]
+	public static class CheckpointPatch
+	{
+		public static void Prefix(MidwayCheckpoint __instance, Collider other)
+		{
+			if (LocationManager.checkpointsanity &&
+				other.gameObject.tag == "Player")
+			{
+				if (LocationManager.checkpointsanityDict.ContainsKey((
+					Core.currRoom.levelId, 
+					Core.currRoom.roomId, 
+					Mathf.RoundToInt(__instance.NewRespawnPoint.x), 
+					Mathf.RoundToInt(__instance.NewRespawnPoint.y))))
+				{
+					LocationManager.MarkLocationAsChecked(LocationManager.checkpointsanityDict[(
+						Core.currRoom.levelId, 
+						Core.currRoom.roomId, 
+						Mathf.RoundToInt(__instance.NewRespawnPoint.x), 
+						Mathf.RoundToInt(__instance.NewRespawnPoint.y))]);
+				}
+			}
+		}
+	}
+
 	[HarmonyPatch(typeof(BossOneFinal), "NextPhase")]
 	public static class BossOnePatch
 	{
@@ -3133,6 +3146,16 @@ namespace Fantastic_Fist_Archipelago_Client
 		}
 	}
 
+	[HarmonyPatch(typeof(Boss5_32_Manager), "Start")]
+	public static class BossFivePartThirtyTwoPatchRoomsanity
+	{
+		public static void Prefix()
+		{
+			if (LocationManager.roomsanity)
+				LocationManager.MarkLocationAsChecked(Location.GALACTIC_CENTRAL_POINT_BOSS_ARENA_32);
+		}
+	}
+
 	[HarmonyPatch(typeof(FinalBoss_49_Manager), "OnTriggerEnter")]
 	public static class BossFivePartFortyNinePatch
 	{
@@ -3144,6 +3167,16 @@ namespace Fantastic_Fist_Archipelago_Client
 			}
 
 			LocationManager.MarkLocationAsChecked(Location.GALACTIC_CENTRAL_POINT_HEART_49);
+		}
+	}
+
+	[HarmonyPatch(typeof(FinalBoss_49_Manager), "Start")]
+	public static class BossFivePartFortyNinePatchRoomsanity
+	{
+		public static void Prefix()
+		{
+			if (LocationManager.roomsanity)
+				LocationManager.MarkLocationAsChecked(Location.GALACTIC_CENTRAL_POINT_BOSS_ARENA_49);
 		}
 	}
 
@@ -3164,6 +3197,16 @@ namespace Fantastic_Fist_Archipelago_Client
 			}
 
 			LocationManager.MarkLocationAsChecked(Location.GALACTIC_CENTRAL_POINT_HEART_37);
+		}
+	}
+
+	[HarmonyPatch(typeof(Boss5_37_Bossman), "Start")]
+	public static class BossFivePartThirtySevenPatchRoomsanity
+	{
+		public static void Prefix()
+		{
+			if (LocationManager.roomsanity)
+				LocationManager.MarkLocationAsChecked(Location.GALACTIC_CENTRAL_POINT_BOSS_ARENA_37);
 		}
 	}
 

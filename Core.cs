@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-[assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "1.1.0", "WaluigiGoesWa", null)]
+[assembly: MelonInfo(typeof(Fantastic_Fist_Archipelago_Client.Core), "Fantastic Fist Archipelago Client", "1.2.0", "WaluigiGoesWa", null)]
 [assembly: MelonGame("100th Coin", "Fantastic Fist")]
 
 namespace Fantastic_Fist_Archipelago_Client

@@ -33,9 +33,11 @@ namespace Fantastic_Fist_Archipelago_Client
 			{WorldItem.GALACTIC_SLIDING_BLOCKS, [(ItemType.SLIDING_BLOCK_GALACTIC, 1)] },
 			{WorldItem.BOSS_BLOCKS, [(ItemType.STAR_BLOCK_STANDARD, 1), (ItemType.STAR_BLOCK_HOLD, 1), (ItemType.STAR_BLOCK_DELAY, 1), (ItemType.HEART_BLOCK_STANDARD, 1), (ItemType.HEART_BLOCK_SLIDING, 1), (ItemType.HEART_BLOCK_DELAY, 1)] },
 			{WorldItem.PROGRESSIVE_BOSS_BLOCKS, [(ItemType.STAR_BLOCK_STANDARD, 1), (ItemType.STAR_BLOCK_HOLD, 2), (ItemType.STAR_BLOCK_DELAY, 3), (ItemType.HEART_BLOCK_STANDARD, 4), (ItemType.HEART_BLOCK_SLIDING, 5), (ItemType.HEART_BLOCK_DELAY, 6)] },
+			{WorldItem.STAR_BLOCKS, [(ItemType.STAR_BLOCK_STANDARD, 1), (ItemType.STAR_BLOCK_HOLD, 1), (ItemType.STAR_BLOCK_DELAY, 1)] },
 			{WorldItem.STANDARD_STAR_BLOCKS, [(ItemType.STAR_BLOCK_STANDARD, 1)] },
 			{WorldItem.YELLOW_STAR_BLOCKS, [(ItemType.STAR_BLOCK_HOLD, 1)] },
 			{WorldItem.BLUE_STAR_BLOCKS, [(ItemType.STAR_BLOCK_DELAY, 1)] },
+			{WorldItem.HEART_BLOCKS, [(ItemType.HEART_BLOCK_STANDARD, 1), (ItemType.HEART_BLOCK_SLIDING, 1), (ItemType.HEART_BLOCK_DELAY, 1)] },
 			{WorldItem.STANDARD_HEART_BLOCKS, [(ItemType.HEART_BLOCK_STANDARD, 1)] },
 			{WorldItem.SLIDING_HEART_BLOCKS, [(ItemType.HEART_BLOCK_SLIDING, 1)] },
 			{WorldItem.DELAYED_HEART_BLOCKS, [(ItemType.HEART_BLOCK_DELAY, 1)] },
@@ -134,12 +136,15 @@ namespace Fantastic_Fist_Archipelago_Client
 			{WorldItem.INVERTED_KEY_BLOCKS, [(ItemType.KEY_BLOCK_INVERTED, 1)] },
 			{WorldItem.GRAVITY_ITEMS, [(ItemType.GRAVITY_FLIPPER_UP, 1), (ItemType.GRAVITY_FLIPPER_DOWN, 1), (ItemType.GRAVITY_FIELD_UP, 1), (ItemType.GRAVITY_FIELD_DOWN, 1), (ItemType.GRAVITY_WATER_UP, 1), (ItemType.GRAVITY_WATER_DOWN, 1), (ItemType.GRAVITY_FIST, 1), (ItemType.GRAVITY_ANCHOR, 1)] },
 			{WorldItem.PROGRESSIVE_GRAVITY_ITEMS, [(ItemType.GRAVITY_FLIPPER_UP, 1), (ItemType.GRAVITY_FLIPPER_DOWN, 2), (ItemType.GRAVITY_FIELD_UP, 3), (ItemType.GRAVITY_FIELD_DOWN, 4), (ItemType.GRAVITY_WATER_UP, 5), (ItemType.GRAVITY_WATER_DOWN, 6), (ItemType.GRAVITY_FIST, 7), (ItemType.GRAVITY_ANCHOR, 8)] },
-			{WorldItem.UP_GRAVITY_FLIPPERS, [(ItemType.GRAVITY_FLIPPER_UP, 1)] },
-			{WorldItem.DOWN_GRAVITY_FLIPPERS, [(ItemType.GRAVITY_FLIPPER_DOWN, 1)] },
-			{WorldItem.UP_GRAVITY_FIELDS, [(ItemType.GRAVITY_FIELD_UP, 1)] },
-			{WorldItem.DOWN_GRAVITY_FIELDS, [(ItemType.GRAVITY_FIELD_DOWN, 1)] },
-			{WorldItem.UP_WATER, [(ItemType.GRAVITY_WATER_UP, 1)] },
-			{WorldItem.DOWN_WATER, [(ItemType.GRAVITY_WATER_DOWN, 1)] },
+			{WorldItem.GRAVITY_ORBS, [(ItemType.GRAVITY_FLIPPER_UP, 1), (ItemType.GRAVITY_FLIPPER_DOWN, 1)] },
+			{WorldItem.HONEY_ORBS, [(ItemType.GRAVITY_FLIPPER_UP, 1)] },
+			{WorldItem.WATER_ORBS, [(ItemType.GRAVITY_FLIPPER_DOWN, 1)] },
+			{WorldItem.QUATREFOILS, [(ItemType.GRAVITY_FIELD_UP, 1), (ItemType.GRAVITY_FIELD_DOWN, 1)] },
+			{WorldItem.RED_QUATREFOILS, [(ItemType.GRAVITY_FIELD_UP, 1)] },
+			{WorldItem.GREEN_QUATREFOILS, [(ItemType.GRAVITY_FIELD_DOWN, 1)] },
+			{WorldItem.LIQUIDS, [(ItemType.GRAVITY_WATER_UP, 1), (ItemType.GRAVITY_WATER_DOWN, 1)] },
+			{WorldItem.HONEY, [(ItemType.GRAVITY_WATER_UP, 1)] },
+			{WorldItem.WATER, [(ItemType.GRAVITY_WATER_DOWN, 1)] },
 			{WorldItem.GRAVITY_FISTS, [(ItemType.GRAVITY_FIST, 1)] },
 			{WorldItem.GRAVITY_ANCHORS, [(ItemType.GRAVITY_ANCHOR, 1)] },
 			{WorldItem.LIFTS, [(ItemType.LIFT_ARROW, 1), (ItemType.LIFT_HOLD, 1), (ItemType.LIFT_HIVE, 1)] },
@@ -188,7 +193,28 @@ namespace Fantastic_Fist_Archipelago_Client
 		{
 			++worldItems[worldItem];
 
-			if ((int)worldItem < 260)
+			if (worldItem == WorldItem.PROGRESSIVE_BOSS_BLOCKS && (Int64)Core.slotData["boss_block_groups"] != 0)
+			{
+				//If Boss Blocks are grouped then getting the first progressive should give all 3 star blocks,
+				//The second should give all 3 heart blocks.
+				worldItems[WorldItem.PROGRESSIVE_BOSS_BLOCKS] += 2;
+			}
+			else if (worldItem == WorldItem.PROGRESSIVE_GRAVITY_ITEMS && (Int64)Core.slotData["gravity_groups"] != 0)
+			{
+				//If Gravity Items are grouped then getting the first progressive should give both orbs,
+				//The second should give both quatrefoils, and the third should give both liquids.
+				//The last 2 progressive gravity items should work the same unlocking gravity fists and gravity anchors.
+				switch (worldItems[WorldItem.PROGRESSIVE_GRAVITY_ITEMS])
+				{
+					case 1:
+					case 3:
+					case 5:
+						++worldItems[WorldItem.PROGRESSIVE_GRAVITY_ITEMS];
+						break;
+				}
+			}
+
+			if ((int)worldItem < 270)
 			{
 				foreach ((ItemType, int) itemType in worldItemToItemType[worldItem])
 				{
@@ -198,9 +224,13 @@ namespace Fantastic_Fist_Archipelago_Client
 					}
 				}
 			}
-			else if ((int)worldItem == 260)
+			else if (worldItem == WorldItem.COIN)
 			{
-				//TODO add coin logic
+				
+			}
+			else if (worldItem == WorldItem.EXTRA_COIN)
+			{
+				++worldItems[WorldItem.COIN];
 			}
 			else if ((int)worldItem < 400)
 			{
@@ -238,12 +268,14 @@ namespace Fantastic_Fist_Archipelago_Client
 
 		BOSS_BLOCKS = 30,
 		PROGRESSIVE_BOSS_BLOCKS = 31,
-		STANDARD_STAR_BLOCKS = 32,
-		YELLOW_STAR_BLOCKS = 33,
-		BLUE_STAR_BLOCKS = 34,
-		STANDARD_HEART_BLOCKS = 35,
-		SLIDING_HEART_BLOCKS = 36,
-		DELAYED_HEART_BLOCKS = 37,
+		STAR_BLOCKS = 32,
+		STANDARD_STAR_BLOCKS = 33,
+		YELLOW_STAR_BLOCKS = 34,
+		BLUE_STAR_BLOCKS = 35,
+		HEART_BLOCKS = 36,
+		STANDARD_HEART_BLOCKS = 37,
+		SLIDING_HEART_BLOCKS = 38,
+		DELAYED_HEART_BLOCKS = 39,
 
 		POP_BLOCKS = 40,
 		PROGRESSIVE_POP_BLOCKS = 41,
@@ -356,47 +388,50 @@ namespace Fantastic_Fist_Archipelago_Client
 
 		GRAVITY_ITEMS = 210,
 		PROGRESSIVE_GRAVITY_ITEMS = 211,
-		UP_GRAVITY_FLIPPERS = 212,
-		DOWN_GRAVITY_FLIPPERS = 213,
-		UP_GRAVITY_FIELDS = 214,
-		DOWN_GRAVITY_FIELDS = 215,
-		UP_WATER = 216,
-		DOWN_WATER = 217,
-		GRAVITY_FISTS = 218,
-		GRAVITY_ANCHORS = 219,
+		GRAVITY_ORBS = 212,
+		HONEY_ORBS = 213,
+		WATER_ORBS = 214,
+		QUATREFOILS = 215,
+		RED_QUATREFOILS = 216,
+		GREEN_QUATREFOILS = 217,
+		LIQUIDS = 218,
+		HONEY = 219,
+		WATER = 220,
+		GRAVITY_FISTS = 221,
+		GRAVITY_ANCHORS = 222,
 
-		LIFTS = 220,
-		PROGRESSIVE_LIFTS = 221,
-		ARROW_LIFTS = 222,
-		YELLOW_LIFTS = 223,
-		HIVE_LIFTS = 224,
+		LIFTS = 230,
+		PROGRESSIVE_LIFTS = 231,
+		ARROW_LIFTS = 232,
+		YELLOW_LIFTS = 233,
+		HIVE_LIFTS = 234,
 
-		SEMISOLIDS = 230,
-		PROGRESSIVE_SEMISOLIDS = 231,
-		STANDARD_SEMISOLIDS = 232,
-		INVERTED_SEMISOLIDS = 233,
-		TOGGLE_SEMISOLIDS = 234,
+		SEMISOLIDS = 240,
+		PROGRESSIVE_SEMISOLIDS = 241,
+		STANDARD_SEMISOLIDS = 242,
+		INVERTED_SEMISOLIDS = 243,
+		TOGGLE_SEMISOLIDS = 244,
 
-		ON_OFF_BLOCKS = 240,
-		TIMER_BUTTONS = 241,
-		TOGGLE_FLOWERS = 242,
-		TETHERS = 243,
-		ICICLES = 244,
-		GLASS_BLOCKS = 245,
-		VIVIS_FLASHLIGHT = 246,
+		ON_OFF_BLOCKS = 250,
+		TIMER_BUTTONS = 251,
+		TOGGLE_FLOWERS = 252,
+		TETHERS = 253,
+		ICICLES = 254,
+		GLASS_BLOCKS = 255,
+		VIVIS_FLASHLIGHT = 256,
+		THERMALS = 257,
+		GOLF_BALL = 258,
+		GOLF_CART = 259,
+		FALLING_CRYSTALS = 260,
+		GRAB_BLOCKS = 261,
+		MIRRORS = 262,
+		BARRELS = 263,
+		PILLARS = 264,
+		YELLOW_SPIN_BLOCKS = 265,
+		TREES = 266,
 
-		THERMALS = 247,
-		GOLF_BALL = 248,
-		GOLF_CART = 249,
-		FALLING_CRYSTALS = 250,
-		GRAB_BLOCKS = 251,
-		MIRRORS = 252,
-		BARRELS = 253,
-		PILLARS = 254,
-		YELLOW_SPIN_BLOCKS = 255,
-		TREES = 256,
-
-		COIN = 260,
+		COIN = 270,
+		EXTRA_COIN = 271,
 
 		PROGRESSIVE_STANDARD_PATH = 300,
 		PROGRESSIVE_SECRET_PATH = 301,
